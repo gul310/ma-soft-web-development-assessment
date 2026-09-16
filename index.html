@@ -333,12 +333,14 @@
           <div class="card mb-4">
             <div class="card-header">
               <h3 class="card-title">Add New Tracked Item</h3>
+              <span class="text-xs text-muted">Title is mandatory &bull; Description is optional</span>
             </div>
-            <form id="q1-add-form">
-              <div class="grid" style="grid-template-columns: 2fr 1fr 1fr auto; gap: 0.75rem; align-items: flex-end;">
+            <form id="q1-add-form" novalidate>
+              <div class="grid" style="grid-template-columns: 2fr 1fr 1fr auto; gap: 0.75rem; align-items: flex-end; margin-bottom: 0.75rem;">
                 <div class="form-group" style="margin-bottom: 0;">
-                  <label class="form-label" for="q1-item-title-input">Item Title / Actionable Task <span class="required-star">*</span></label>
-                  <input type="text" id="q1-item-title-input" class="form-input" placeholder="e.g. Implement AbortController on fetch requests" autocomplete="off" required>
+                  <label class="form-label" for="q1-item-title-input">Item Title / Name <span class="required-star">*</span></label>
+                  <input type="text" id="q1-item-title-input" class="form-input" placeholder="e.g. Implement AbortController on fetch requests" autocomplete="off" maxlength="60" required>
+                  <div class="form-error-msg" id="q1-error-title" role="alert"></div>
                 </div>
 
                 <div class="form-group" style="margin-bottom: 0;">
@@ -350,6 +352,7 @@
                     <option value="UI/UX">UI/UX</option>
                     <option value="General">General</option>
                   </select>
+                  <div class="form-error-msg" id="q1-error-category" role="alert"></div>
                 </div>
 
                 <div class="form-group" style="margin-bottom: 0;">
@@ -360,11 +363,19 @@
                     <option value="Medium" selected>Medium</option>
                     <option value="Low">Low</option>
                   </select>
+                  <div class="form-error-msg" id="q1-error-priority" role="alert"></div>
                 </div>
 
-                <button type="submit" class="btn btn-primary" style="height: 42px;">
+                <button type="submit" id="q1-add-btn" class="btn btn-primary" style="height: 42px;">
                   <span>+</span> Add Item
                 </button>
+              </div>
+
+              <!-- Optional Description Input -->
+              <div class="form-group" style="margin-bottom: 0;">
+                <label class="form-label" for="q1-item-desc-input">Description <span class="text-xs text-muted font-normal">(Optional &bull; Max 250 characters)</span></label>
+                <input type="text" id="q1-item-desc-input" class="form-input text-sm" placeholder="Add additional context or notes about this item..." maxlength="250">
+                <div class="form-error-msg" id="q1-error-description" role="alert"></div>
               </div>
             </form>
           </div>
@@ -372,14 +383,17 @@
           <!-- Filter & Search Controls Bar -->
           <div class="q1-controls-bar">
             <div class="search-input-group">
-              <input type="text" id="q1-search-input" class="form-input" placeholder="Search tracked items by title or category...">
+              <input type="text" id="q1-search-input" class="form-input" placeholder="Search items by title, description, or category...">
             </div>
 
-            <div class="flex gap-2">
+            <div class="flex gap-2 flex-wrap">
               <button class="btn btn-primary btn-sm q1-filter-btn active" data-filter="all">All Items</button>
               <button class="btn btn-secondary btn-sm q1-filter-btn" data-filter="active">Active</button>
               <button class="btn btn-secondary btn-sm q1-filter-btn" data-filter="completed">Completed</button>
               <button class="btn btn-secondary btn-sm q1-filter-btn" data-filter="Critical">Critical</button>
+              <button class="btn btn-secondary btn-sm q1-filter-btn" data-filter="High">High</button>
+              <button class="btn btn-secondary btn-sm q1-filter-btn" data-filter="Medium">Medium</button>
+              <button class="btn btn-secondary btn-sm q1-filter-btn" data-filter="Low">Low</button>
             </div>
           </div>
 
@@ -396,35 +410,56 @@
               <button class="btn-icon btn-sm" id="q1-close-logic-btn" aria-label="Close Drawer">✕</button>
             </div>
             <div class="drawer-body">
-              <h4>1. Event Handling Strategy (Event Delegation)</h4>
+              <h4>1. How Application State Is Maintained</h4>
               <p class="text-sm mb-3">
-                Rather than attaching individual event listeners to every add, edit, and delete button in the list (which creates memory bloat and requires listener re-binding upon every render), we attach a <strong>single event listener</strong> on the parent <code>&lt;ul id="q1-items-container"&gt;</code> element. When a click occurs, <code>event.target.closest('[data-action]')</code> intercepts the target action cleanly.
+                State is encapsulated in <code>ItemStore</code> (an ES6 singleton). The store manages an in-memory array of item objects, serializes mutations to <code>localStorage</code> through <code>StorageService</code>, and publishes change events over <code>EventBus</code> to trigger re-renders.
               </p>
 
-              <h4>2. DOM Update Strategy (Zero Page Reloads)</h4>
+              <h4>2. How Items Are Added</h4>
               <p class="text-sm mb-3">
-                All state mutations are handled in <code>ItemStore</code>. When an item is added, toggled, or edited, the store notifies subscribers and the view re-renders using an off-screen <code>DocumentFragment</code>. This aggregates all DOM node creation into a single paint/reflow pass, preventing layout thrashing.
+                Upon form submission, inputs are validated and sanitized via <code>cleanInputString()</code>. If valid, <code>itemStore.addItem()</code> generates a timestamped identifier, sets <code>completed: false</code>, prepends the object to the state array, and saves to storage.
               </p>
 
-              <h4>3. Input Validation & Feedback</h4>
+              <h4>3. How Items Are Edited</h4>
               <p class="text-sm mb-3">
-                Items are sanitized via <code>cleanInputString()</code> to trim excess whitespace. Empties and strings under 3 characters are rejected with visual input error states. Deletions trigger an accessible toast notification with an interactive <strong>Undo action</strong> that restores the deleted node to its exact previous index.
+                Clicking the edit button triggers <code>enableInlineEdit()</code>. The text nodes are swapped for validated input fields in place. When saved, the controller validates the modified values and calls <code>itemStore.updateItem(id, updates)</code>, updating state and DOM in-memory.
               </p>
 
-              <div class="code-box text-xs">
-// Event Delegation Code snippet in Q1:
-this.container.addEventListener('click', (e) => {
-  const deleteBtn = e.target.closest('[data-action="delete"]');
-  if (deleteBtn) {
-    const id = deleteBtn.closest('.q1-item-card').dataset.id;
-    const removed = itemStore.removeItem(id);
-    toast.success(`Removed: "${removed.title}"`, {
-      label: 'Undo',
-      onClick: () => itemStore.undoLastDelete()
-    });
-  }
-});
-              </div>
+              <h4>4. How Items Are Deleted & Restored</h4>
+              <p class="text-sm mb-3">
+                Clicking delete identifies the item by <code>dataset.id</code>, splices it from state, and pushes a record onto an internal undo history stack. A non-blocking toast notification is dispatched with an interactive <strong>Undo action</strong> that restores the deleted item to its exact previous index.
+              </p>
+
+              <h4>5. How DOM Rendering Works Efficiently</h4>
+              <p class="text-sm mb-3">
+                Dynamic rendering utilizes <code>DocumentFragment</code>. All <code>&lt;li&gt;</code> item nodes are built off-screen and appended into the memory fragment. The fragment is then attached to <code>#q1-items-container</code> in <strong>one single reflow</strong> rather than $N$ separate repaints.
+              </p>
+
+              <h4>6. Why Page Reload Is Unnecessary</h4>
+              <p class="text-sm mb-3">
+                Browser form submission defaults are intercepted via <code>e.preventDefault()</code>. State changes mutate the client data structure directly, and DOM nodes are patched without destroying the browser runtime context or dropping network connections.
+              </p>
+
+              <h4>7. How Event Delegation Works</h4>
+              <p class="text-sm mb-3">
+                Instead of binding listeners to every dynamically generated button, a single event listener is attached to the static parent <code>&lt;ul id="q1-items-container"&gt;</code>. Through native event bubbling, clicks bubble up to the container where <code>e.target.closest('[data-action]')</code> inspects the action attribute.
+              </p>
+
+              <h4>8. Why Event Delegation Is Useful for Dynamic Content</h4>
+              <p class="text-sm mb-3">
+                1) <strong>Zero Memory Leaks:</strong> Adding or removing 1,000 items creates zero new event listeners.<br>
+                2) <strong>No Re-binding Overhead:</strong> Newly inserted items work automatically without requiring manual <code>addEventListener</code> attachment after each render.
+              </p>
+
+              <h4>9. How Validation Works</h4>
+              <p class="text-sm mb-3">
+                Validation enforces: 1) Required title non-empty, 2) Whitespace-only rejection via <code>.trim()</code>, 3) Minimum length $\ge 3$ and maximum $\le 60$ characters, 4) Optional description maximum $\le 250$ characters, 5) Allowed priority enum check. Specific accessible error messages are displayed below invalid controls.
+              </p>
+
+              <h4>10. How User Feedback Is Generated</h4>
+              <p class="text-sm mb-3">
+                The application dispatches accessible toast notifications (Success, Warning, Info, Error) with ARIA live region announcements, updates live statistics counters in the header strip, and highlights invalid input borders in red with descriptive error text.
+              </p>
             </div>
           </div>
         </section>

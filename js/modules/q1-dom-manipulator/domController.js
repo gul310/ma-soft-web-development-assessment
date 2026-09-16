@@ -4,8 +4,10 @@
  * - Dynamic add, update, remove, and display without page reloads
  * - Single-listener event delegation for superior performance
  * - DocumentFragment batch rendering
- * - Input validation & rich toast feedback with Undo support
- * - Integrated Logic & Event Flow explanation drawer
+ * - Multi-field validation (Title, Description, Priority) with accessible inline error messages
+ * - Rich toast feedback with Undo support
+ * - Search across titles and descriptions & filtering by priority/status
+ * - In-app 10-point Logic & Event Flow explanation drawer
  */
 
 import { qs, qsa, createElement, batchRender, clearElement } from '../../utils/dom.js';
@@ -54,6 +56,26 @@ export class DomController {
       this.handleAddItem();
     });
 
+    // Real-time error clearing on typing
+    const titleInput = qs('#q1-item-title-input');
+    const descInput = qs('#q1-item-desc-input');
+
+    if (titleInput) {
+      titleInput.addEventListener('input', () => {
+        if (titleInput.classList.contains('is-invalid')) {
+          this.validateTitle(titleInput.value);
+        }
+      });
+    }
+
+    if (descInput) {
+      descInput.addEventListener('input', () => {
+        if (descInput.classList.contains('is-invalid')) {
+          this.validateDescription(descInput.value);
+        }
+      });
+    }
+
     // 2. Event Delegation for List Container (Edit, Delete, Toggle Complete)
     this.container.addEventListener('click', (e) => {
       const target = e.target;
@@ -64,7 +86,7 @@ export class DomController {
         const id = toggleBtn.closest('.q1-item-card').dataset.id;
         const updated = itemStore.toggleComplete(id);
         if (updated) {
-          toast.info(updated.completed ? 'Item marked as completed' : 'Item marked as pending');
+          toast.info(updated.completed ? `Completed: "${updated.title}"` : `Reopened: "${updated.title}"`);
         }
         return;
       }
@@ -150,39 +172,114 @@ export class DomController {
     }
   }
 
+  validateTitle(rawTitle) {
+    const errorEl = qs('#q1-error-title');
+    const titleInput = qs('#q1-item-title-input');
+    const trimmed = (rawTitle || '').trim();
+
+    if (!trimmed) {
+      if (errorEl) {
+        errorEl.textContent = 'Item title is required and cannot be whitespace only.';
+        errorEl.classList.add('visible');
+      }
+      if (titleInput) titleInput.classList.add('is-invalid');
+      return false;
+    }
+
+    if (trimmed.length < 3) {
+      if (errorEl) {
+        errorEl.textContent = 'Title must be at least 3 characters long.';
+        errorEl.classList.add('visible');
+      }
+      if (titleInput) titleInput.classList.add('is-invalid');
+      return false;
+    }
+
+    if (trimmed.length > 60) {
+      if (errorEl) {
+        errorEl.textContent = 'Title cannot exceed 60 characters.';
+        errorEl.classList.add('visible');
+      }
+      if (titleInput) titleInput.classList.add('is-invalid');
+      return false;
+    }
+
+    if (errorEl) {
+      errorEl.textContent = '';
+      errorEl.classList.remove('visible');
+    }
+    if (titleInput) {
+      titleInput.classList.remove('is-invalid');
+      titleInput.classList.add('is-valid');
+    }
+    return true;
+  }
+
+  validateDescription(rawDesc) {
+    const errorEl = qs('#q1-error-description');
+    const descInput = qs('#q1-item-desc-input');
+    const desc = rawDesc || '';
+
+    if (desc.length > 250) {
+      if (errorEl) {
+        errorEl.textContent = 'Description cannot exceed 250 characters.';
+        errorEl.classList.add('visible');
+      }
+      if (descInput) descInput.classList.add('is-invalid');
+      return false;
+    }
+
+    if (errorEl) {
+      errorEl.textContent = '';
+      errorEl.classList.remove('visible');
+    }
+    if (descInput) {
+      descInput.classList.remove('is-invalid');
+    }
+    return true;
+  }
+
   handleAddItem() {
     const titleInput = qs('#q1-item-title-input');
+    const descInput = qs('#q1-item-desc-input');
     const categorySelect = qs('#q1-item-category-input');
     const prioritySelect = qs('#q1-item-priority-input');
 
+    const isTitleValid = this.validateTitle(titleInput.value);
+    const isDescValid = this.validateDescription(descInput?.value || '');
+
+    if (!isTitleValid) {
+      titleInput.focus();
+      toast.warning('Please enter a valid item title.');
+      return;
+    }
+
+    if (!isDescValid) {
+      descInput.focus();
+      toast.warning('Please fix the description length.');
+      return;
+    }
+
     const title = cleanInputString(titleInput.value);
-
-    // Strict Validation
-    if (!title) {
-      toast.warning('Please enter an item title.');
-      titleInput.classList.add('is-invalid');
-      titleInput.focus();
-      return;
-    }
-
-    if (title.length < 3) {
-      toast.warning('Title must be at least 3 characters long.');
-      titleInput.classList.add('is-invalid');
-      titleInput.focus();
-      return;
-    }
-
-    titleInput.classList.remove('is-invalid');
+    const description = cleanInputString(descInput?.value || '');
+    const category = categorySelect.value;
+    const priority = prioritySelect.value;
 
     // Create item in store
     const newItem = itemStore.addItem({
       title,
-      category: categorySelect.value,
-      priority: prioritySelect.value
+      description,
+      category,
+      priority
     });
 
-    // Reset input
+    // Reset inputs & states
     titleInput.value = '';
+    titleInput.classList.remove('is-valid', 'is-invalid');
+    if (descInput) {
+      descInput.value = '';
+      descInput.classList.remove('is-valid', 'is-invalid');
+    }
     titleInput.focus();
 
     toast.success(`Added item: "${newItem.title}"`);
@@ -190,17 +287,47 @@ export class DomController {
 
   enableInlineEdit(itemCard) {
     const id = itemCard.dataset.id;
-    const titleElement = qs('.q1-item-title', itemCard);
-    const currentTitle = titleElement.textContent;
+    const item = itemStore.getItems().find(i => i.id === id);
+    if (!item) return;
 
-    const input = createElement('input', {
-      className: 'form-input form-input-sm',
+    const contentContainer = qs('.q1-item-left', itemCard);
+    const actionsContainer = qs('.q1-item-actions', itemCard);
+
+    // Save original DOM representation in case of cancel
+    const originalLeftHTML = contentContainer.cloneNode(true);
+    const originalActionsHTML = actionsContainer.cloneNode(true);
+
+    clearElement(contentContainer);
+    clearElement(actionsContainer);
+
+    // Edit Inputs
+    const titleEditInput = createElement('input', {
+      className: 'form-input form-input-sm mb-1',
       attributes: {
         type: 'text',
-        value: currentTitle,
+        value: item.title,
+        maxlength: '60',
         'aria-label': 'Edit item title'
       }
     });
+
+    const descEditInput = createElement('input', {
+      className: 'form-input form-input-sm text-xs',
+      attributes: {
+        type: 'text',
+        value: item.description || '',
+        maxlength: '250',
+        placeholder: 'Edit optional description...',
+        'aria-label': 'Edit item description'
+      }
+    });
+
+    const editWrapper = createElement('div', {
+      className: 'flex-col w-full gap-1',
+      children: [titleEditInput, descEditInput]
+    });
+
+    contentContainer.appendChild(editWrapper);
 
     const saveBtn = createElement('button', {
       className: 'btn btn-primary btn-sm',
@@ -212,23 +339,42 @@ export class DomController {
       text: 'Cancel'
     });
 
-    const editContainer = createElement('div', {
-      className: 'flex items-center gap-2 w-full',
-      children: [input, saveBtn, cancelBtn]
-    });
+    actionsContainer.appendChild(saveBtn);
+    actionsContainer.appendChild(cancelBtn);
 
-    clearElement(titleElement);
-    titleElement.appendChild(editContainer);
-    input.focus();
-    input.select();
+    titleEditInput.focus();
+    titleEditInput.select();
 
     const saveChanges = () => {
-      const newTitle = cleanInputString(input.value);
-      if (!newTitle) {
-        toast.warning('Title cannot be empty.');
+      const newTitle = cleanInputString(titleEditInput.value);
+      const newDesc = cleanInputString(descEditInput.value);
+
+      if (!newTitle || newTitle.length < 3) {
+        toast.warning('Title must be at least 3 characters long.');
+        titleEditInput.classList.add('is-invalid');
+        titleEditInput.focus();
         return;
       }
-      itemStore.updateItem(id, { title: newTitle });
+
+      if (newTitle.length > 60) {
+        toast.warning('Title cannot exceed 60 characters.');
+        titleEditInput.classList.add('is-invalid');
+        titleEditInput.focus();
+        return;
+      }
+
+      if (newDesc.length > 250) {
+        toast.warning('Description cannot exceed 250 characters.');
+        descEditInput.classList.add('is-invalid');
+        descEditInput.focus();
+        return;
+      }
+
+      itemStore.updateItem(id, {
+        title: newTitle,
+        description: newDesc
+      });
+
       toast.success('Item updated successfully.');
     };
 
@@ -238,7 +384,13 @@ export class DomController {
 
     saveBtn.addEventListener('click', saveChanges);
     cancelBtn.addEventListener('click', cancelChanges);
-    input.addEventListener('keydown', (e) => {
+    
+    titleEditInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') saveChanges();
+      if (e.key === 'Escape') cancelChanges();
+    });
+
+    descEditInput.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') saveChanges();
       if (e.key === 'Escape') cancelChanges();
     });
@@ -262,6 +414,7 @@ export class DomController {
     if (query) {
       items = items.filter(i => 
         i.title.toLowerCase().includes(query) || 
+        (i.description && i.description.toLowerCase().includes(query)) ||
         i.category.toLowerCase().includes(query)
       );
     }
@@ -298,6 +451,16 @@ export class DomController {
       text: item.title
     });
 
+    // Optional Description Span
+    const childrenNodes = [titleSpan];
+    if (item.description) {
+      const descSpan = createElement('p', {
+        className: 'text-xs text-secondary mt-1',
+        text: item.description
+      });
+      childrenNodes.push(descSpan);
+    }
+
     // Metadata Badges
     const priorityBadge = createElement('span', {
       className: `badge ${priorityColors[item.priority] || 'badge-neutral'}`,
@@ -315,16 +478,19 @@ export class DomController {
     });
 
     const metaDiv = createElement('div', {
-      className: 'q1-item-meta',
+      className: 'q1-item-meta mt-1',
       children: [priorityBadge, categoryBadge, timeSpan]
     });
 
+    childrenNodes.push(metaDiv);
+
     const textGroup = createElement('div', {
-      children: [titleSpan, metaDiv]
+      className: 'flex-col w-full',
+      children: childrenNodes
     });
 
     const leftSection = createElement('div', {
-      className: 'q1-item-left',
+      className: 'q1-item-left w-full',
       children: [checkbox, textGroup]
     });
 
@@ -364,7 +530,7 @@ export class DomController {
       children: [
         createElement('div', { className: 'empty-state-icon', text: '📋' }),
         createElement('h4', { text: 'No Items Found' }),
-        createElement('p', { className: 'text-sm text-muted', text: 'Try adding a new item or adjusting your active filters.' })
+        createElement('p', { className: 'text-sm text-muted', text: 'Try adding a new item or adjusting your active search/filters.' })
       ]
     });
     this.container.appendChild(emptyBox);

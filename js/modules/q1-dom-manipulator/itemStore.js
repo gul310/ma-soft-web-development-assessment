@@ -32,10 +32,11 @@ class ItemStore {
     return [...this.items];
   }
 
-  addItem({ title, category, priority }) {
+  addItem({ title, description = '', category, priority }) {
     const newItem = {
       id: `item-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
       title: title.trim(),
+      description: typeof description === 'string' ? description.trim() : '',
       category: category || 'General',
       priority: priority || 'Medium',
       completed: false,
