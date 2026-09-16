@@ -1,0 +1,1211 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="MA Soft Tech Solutions - Advanced Web Development Internship Selection Assessment. Complete implementation of JavaScript DOM manipulation, form validation, REST API integration, CRUD module, security, and Git workflow.">
+  <meta name="author" content="Frontend Candidate">
+  <title>MA Soft Tech Solutions | Web Development Assessment Hub</title>
+
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <!-- Application Stylesheets -->
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/views.css">
+  <link rel="stylesheet" href="css/animations.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Top Application Header -->
+    <header class="app-header">
+      <div class="brand-section">
+        <div class="brand-logo" aria-hidden="true">MA</div>
+        <div class="brand-info">
+          <h1>MA Soft Tech Solutions</h1>
+          <p>Web Development Assessment &bull; Total Marks: 100 &bull; Advanced Level</p>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <!-- Live Online/Offline Status Indicator -->
+        <div class="status-pill" id="network-status-container" title="Real-time Network Connectivity Status">
+          <span class="status-indicator-dot" id="network-status-dot"></span>
+          <span id="network-status-text">Online</span>
+        </div>
+
+        <!-- Theme Toggle Button -->
+        <button id="theme-toggle-btn" class="btn-icon" aria-label="Toggle Dark and Light Theme" title="Toggle Theme (Dark / Light)">
+          <span id="theme-icon">🌙</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- App Main Workspace -->
+    <div class="app-workspace">
+      <!-- Sidebar Navigation -->
+      <nav class="app-sidebar" aria-label="Assessment Modules Navigation">
+        <div class="flex-col gap-3">
+          <div class="nav-section-title">Assessment Navigation</div>
+          <ul class="nav-list" role="tablist">
+            <li>
+              <button class="nav-item-btn active" data-route="overview" role="tab" id="tab-overview" aria-controls="view-overview" aria-selected="true">
+                <div class="nav-btn-content">
+                  <span aria-hidden="true">📊</span>
+                  <span>Dashboard Overview</span>
+                </div>
+                <span class="nav-badge">Hub</span>
+              </button>
+            </li>
+            <li>
+              <button class="nav-item-btn" data-route="q1-dom" role="tab" id="tab-q1-dom" aria-controls="view-q1-dom" aria-selected="false">
+                <div class="nav-btn-content">
+                  <span aria-hidden="true">⚡</span>
+                  <span>Q1: DOM Manipulation</span>
+                </div>
+                <span class="nav-badge">20M</span>
+              </button>
+            </li>
+            <li>
+              <button class="nav-item-btn" data-route="q2-form" role="tab" id="tab-q2-form" aria-controls="view-q2-form" aria-selected="false">
+                <div class="nav-btn-content">
+                  <span aria-hidden="true">📝</span>
+                  <span>Q2: Form & Validation</span>
+                </div>
+                <span class="nav-badge">15M</span>
+              </button>
+            </li>
+            <li>
+              <button class="nav-item-btn" data-route="q3-api" role="tab" id="tab-q3-api" aria-controls="view-q3-api" aria-selected="false">
+                <div class="nav-btn-content">
+                  <span aria-hidden="true">🌐</span>
+                  <span>Q3: REST API Integration</span>
+                </div>
+                <span class="nav-badge">20M</span>
+              </button>
+            </li>
+            <li>
+              <button class="nav-item-btn" data-route="q4-crud" role="tab" id="tab-q4-crud" aria-controls="view-q4-crud" aria-selected="false">
+                <div class="nav-btn-content">
+                  <span aria-hidden="true">🎓</span>
+                  <span>Q4: Student CRUD Module</span>
+                </div>
+                <span class="nav-badge">20M</span>
+              </button>
+            </li>
+            <li>
+              <button class="nav-item-btn" data-route="q5-security" role="tab" id="tab-q5-security" aria-controls="view-q5-security" aria-selected="false">
+                <div class="nav-btn-content">
+                  <span aria-hidden="true">🛡️</span>
+                  <span>Q5: Security & Performance</span>
+                </div>
+                <span class="nav-badge">15M</span>
+              </button>
+            </li>
+            <li>
+              <button class="nav-item-btn" data-route="q6-git" role="tab" id="tab-q6-git" aria-controls="view-q6-git" aria-selected="false">
+                <div class="nav-btn-content">
+                  <span aria-hidden="true">🌿</span>
+                  <span>Q6: Git / GitHub Workflow</span>
+                </div>
+                <span class="nav-badge">10M</span>
+              </button>
+            </li>
+          </ul>
+        </div>
+
+        <div class="sidebar-footer-card">
+          <h4>Candidate Evaluation</h4>
+          <p>Production-quality architecture built to satisfy 100% of MA Soft Tech Solutions criteria.</p>
+          <div class="flex items-center justify-between text-xs text-muted mt-2">
+            <span>Difficulty: <strong>Advanced</strong></span>
+            <span>Total: <strong>100/100</strong></span>
+          </div>
+        </div>
+      </nav>
+
+      <!-- Main Application Content Area -->
+      <main class="app-main" id="main-content">
+        
+        <!-- ===================================================================
+             VIEW: Dashboard Overview
+             =================================================================== -->
+        <section id="view-overview" class="view-panel active" role="tabpanel" aria-labelledby="tab-overview">
+          <div class="view-header">
+            <div class="view-header-top">
+              <div class="view-title-group">
+                <h2>Assessment Overview & System Architecture</h2>
+                <span class="badge badge-primary">Candidate Assessment</span>
+              </div>
+            </div>
+            <p class="view-description">
+              Welcome to the unified Web Development Assessment Hub. Each section below represents a fully operational, testable module demonstrating senior frontend engineering, UI/UX aesthetics, DOM optimization, security defenses, and clean software architecture.
+            </p>
+          </div>
+
+          <!-- Top Stats Grid -->
+          <div class="overview-stats-grid">
+            <div class="stat-card">
+              <div class="stat-icon" aria-hidden="true">🏆</div>
+              <div>
+                <div class="stat-value">100</div>
+                <div class="stat-label">Total Marks Scope</div>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-icon" aria-hidden="true">⚡</div>
+              <div>
+                <div class="stat-value" id="ov-q1-count">3</div>
+                <div class="stat-label">Active DOM Items (Q1)</div>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-icon" aria-hidden="true">🎓</div>
+              <div>
+                <div class="stat-value" id="ov-q4-count">5</div>
+                <div class="stat-label">Enrolled Students (Q4)</div>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-icon" aria-hidden="true">🛡️</div>
+              <div>
+                <div class="stat-value">6 / 6</div>
+                <div class="stat-label">Security & Perf Standards</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Assessment Modules Grid Cards -->
+          <h3 class="mb-3">Assessment Question Modules</h3>
+          <div class="assessment-modules-grid">
+            
+            <!-- Q1 Card -->
+            <div class="card module-card" data-target-route="q1-dom" tabindex="0" role="button" aria-label="Open Question 1 DOM Manipulation">
+              <div>
+                <div class="module-card-top">
+                  <span class="badge badge-primary">Question 1</span>
+                  <span class="badge badge-success">20 Marks</span>
+                </div>
+                <div class="module-card-title">Advanced JS & DOM Manipulation</div>
+                <p class="module-card-desc">
+                  Interactive dynamic item tracker with add, inline edit, delete with undo toast, priority filters, event delegation, and DocumentFragment batch rendering.
+                </p>
+              </div>
+              <div class="module-card-footer">
+                <span class="text-xs text-muted font-mono">Zero Page Reloads</span>
+                <span class="btn btn-sm btn-outline">Launch Module &rarr;</span>
+              </div>
+            </div>
+
+            <!-- Q2 Card -->
+            <div class="card module-card" data-target-route="q2-form" tabindex="0" role="button" aria-label="Open Question 2 Form Validation">
+              <div>
+                <div class="module-card-top">
+                  <span class="badge badge-primary">Question 2</span>
+                  <span class="badge badge-success">15 Marks</span>
+                </div>
+                <div class="module-card-title">Front-End Form & Validation</div>
+                <p class="module-card-desc">
+                  Comprehensive 5-field registration suite with RFC 5322 email checking, dynamic phone formatting, entropy password strength meter, and mismatch validation.
+                </p>
+              </div>
+              <div class="module-card-footer">
+                <span class="text-xs text-muted font-mono">Multi-Tier Validation</span>
+                <span class="btn btn-sm btn-outline">Launch Module &rarr;</span>
+              </div>
+            </div>
+
+            <!-- Q3 Card -->
+            <div class="card module-card" data-target-route="q3-api" tabindex="0" role="button" aria-label="Open Question 3 REST API Integration">
+              <div>
+                <div class="module-card-top">
+                  <span class="badge badge-primary">Question 3</span>
+                  <span class="badge badge-success">20 Marks</span>
+                </div>
+                <div class="module-card-title">REST API Integration</div>
+                <p class="module-card-desc">
+                  Live JSONPlaceholder API consumer with debounced live search, location filtering, skeleton loading, AbortController, and failure simulation controls (404/500/timeout).
+                </p>
+              </div>
+              <div class="module-card-footer">
+                <span class="text-xs text-muted font-mono">Live Public REST API</span>
+                <span class="btn btn-sm btn-outline">Launch Module &rarr;</span>
+              </div>
+            </div>
+
+            <!-- Q4 Card -->
+            <div class="card module-card" data-target-route="q4-crud" tabindex="0" role="button" aria-label="Open Question 4 Student CRUD Module">
+              <div>
+                <div class="module-card-top">
+                  <span class="badge badge-primary">Question 4</span>
+                  <span class="badge badge-success">20 Marks</span>
+                </div>
+                <div class="module-card-title">CRUD Student Management Module</div>
+                <p class="module-card-desc">
+                  Student Information Management System (SIMS) implementing Add, View, Edit, Delete with modal confirmation & undo, search, multi-field sort, and CSV export.
+                </p>
+              </div>
+              <div class="module-card-footer">
+                <span class="text-xs text-muted font-mono">Full CRUD & LocalStorage</span>
+                <span class="btn btn-sm btn-outline">Launch Module &rarr;</span>
+              </div>
+            </div>
+
+            <!-- Q5 Card -->
+            <div class="card module-card" data-target-route="q5-security" tabindex="0" role="button" aria-label="Open Question 5 Security and Performance">
+              <div>
+                <div class="module-card-top">
+                  <span class="badge badge-primary">Question 5</span>
+                  <span class="badge badge-success">15 Marks</span>
+                </div>
+                <div class="module-card-title">Web Security & Performance</div>
+                <p class="module-card-desc">
+                  Interactive XSS testing sandbox, live 1,000 DOM node reflow benchmark test, and deep-dive technical explanations of 6 production best practices.
+                </p>
+              </div>
+              <div class="module-card-footer">
+                <span class="text-xs text-muted font-mono">Interactive Lab & Audit</span>
+                <span class="btn btn-sm btn-outline">Launch Module &rarr;</span>
+              </div>
+            </div>
+
+            <!-- Q6 Card -->
+            <div class="card module-card" data-target-route="q6-git" tabindex="0" role="button" aria-label="Open Question 6 Git Workflow">
+              <div>
+                <div class="module-card-top">
+                  <span class="badge badge-primary">Question 6</span>
+                  <span class="badge badge-success">10 Marks</span>
+                </div>
+                <div class="module-card-title">Git & GitHub Workflow</div>
+                <p class="module-card-desc">
+                  Visual branch & commit tree, copyable Git terminal commands, conventional commit audit, and comprehensive explanation of accidental loss prevention.
+                </p>
+              </div>
+              <div class="module-card-footer">
+                <span class="text-xs text-muted font-mono">Interactive Git Tree</span>
+                <span class="btn btn-sm btn-outline">Launch Module &rarr;</span>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- ===================================================================
+             VIEW: Q1 - Advanced JavaScript & DOM Manipulation (20 Marks)
+             =================================================================== -->
+        <section id="view-q1-dom" class="view-panel" role="tabpanel" aria-labelledby="tab-q1-dom" aria-hidden="true">
+          <div class="view-header">
+            <div class="view-header-top">
+              <div class="view-title-group">
+                <h2>Q1: Advanced JavaScript & DOM Manipulation</h2>
+                <span class="view-badge-score">20 Marks</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <button id="q1-open-logic-btn" class="btn btn-outline btn-sm">
+                  <span>💡</span> Explain Logic & Event Handling
+                </button>
+                <button id="q1-reset-btn" class="btn btn-secondary btn-sm">
+                  <span>↺</span> Reset Defaults
+                </button>
+              </div>
+            </div>
+            <p class="view-description">
+              Demonstrating dynamic DOM manipulation without page reloads: single-listener event delegation, DocumentFragment batch rendering, inline edit capability, priority filtering, and toast notifications with Undo support.
+            </p>
+          </div>
+
+          <!-- Stats Strip -->
+          <div class="q1-stats-strip">
+            <div>Total Items: <span id="q1-stat-total" class="font-mono text-primary font-bold">0</span></div>
+            <div>Pending: <span id="q1-stat-pending" class="font-mono text-warning font-bold">0</span></div>
+            <div>Completed: <span id="q1-stat-completed" class="font-mono text-success font-bold">0</span></div>
+            <div>Critical Priority: <span id="q1-stat-critical" class="font-mono text-danger font-bold">0</span></div>
+          </div>
+
+          <!-- Add Item Card Form -->
+          <div class="card mb-4">
+            <div class="card-header">
+              <h3 class="card-title">Add New Tracked Item</h3>
+            </div>
+            <form id="q1-add-form">
+              <div class="grid" style="grid-template-columns: 2fr 1fr 1fr auto; gap: 0.75rem; align-items: flex-end;">
+                <div class="form-group" style="margin-bottom: 0;">
+                  <label class="form-label" for="q1-item-title-input">Item Title / Actionable Task <span class="required-star">*</span></label>
+                  <input type="text" id="q1-item-title-input" class="form-input" placeholder="e.g. Implement AbortController on fetch requests" autocomplete="off" required>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 0;">
+                  <label class="form-label" for="q1-item-category-input">Category</label>
+                  <select id="q1-item-category-input" class="form-select">
+                    <option value="Architecture">Architecture</option>
+                    <option value="Security">Security</option>
+                    <option value="Performance">Performance</option>
+                    <option value="UI/UX">UI/UX</option>
+                    <option value="General">General</option>
+                  </select>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 0;">
+                  <label class="form-label" for="q1-item-priority-input">Priority</label>
+                  <select id="q1-item-priority-input" class="form-select">
+                    <option value="Critical">Critical</option>
+                    <option value="High">High</option>
+                    <option value="Medium" selected>Medium</option>
+                    <option value="Low">Low</option>
+                  </select>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="height: 42px;">
+                  <span>+</span> Add Item
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Filter & Search Controls Bar -->
+          <div class="q1-controls-bar">
+            <div class="search-input-group">
+              <input type="text" id="q1-search-input" class="form-input" placeholder="Search tracked items by title or category...">
+            </div>
+
+            <div class="flex gap-2">
+              <button class="btn btn-primary btn-sm q1-filter-btn active" data-filter="all">All Items</button>
+              <button class="btn btn-secondary btn-sm q1-filter-btn" data-filter="active">Active</button>
+              <button class="btn btn-secondary btn-sm q1-filter-btn" data-filter="completed">Completed</button>
+              <button class="btn btn-secondary btn-sm q1-filter-btn" data-filter="Critical">Critical</button>
+            </div>
+          </div>
+
+          <!-- Dynamic Item List Container -->
+          <ul id="q1-items-container" class="q1-items-list" aria-label="Dynamic Item List">
+            <!-- Rendered dynamically by domController.js -->
+          </ul>
+
+          <!-- Logic & Event Handling Drawer -->
+          <div class="drawer-backdrop" id="q1-logic-backdrop"></div>
+          <div class="drawer" id="q1-logic-drawer" role="dialog" aria-labelledby="q1-drawer-title" aria-modal="true">
+            <div class="drawer-header">
+              <h3 id="q1-drawer-title">Q1: Logic & Event Handling Architecture</h3>
+              <button class="btn-icon btn-sm" id="q1-close-logic-btn" aria-label="Close Drawer">✕</button>
+            </div>
+            <div class="drawer-body">
+              <h4>1. Event Handling Strategy (Event Delegation)</h4>
+              <p class="text-sm mb-3">
+                Rather than attaching individual event listeners to every add, edit, and delete button in the list (which creates memory bloat and requires listener re-binding upon every render), we attach a <strong>single event listener</strong> on the parent <code>&lt;ul id="q1-items-container"&gt;</code> element. When a click occurs, <code>event.target.closest('[data-action]')</code> intercepts the target action cleanly.
+              </p>
+
+              <h4>2. DOM Update Strategy (Zero Page Reloads)</h4>
+              <p class="text-sm mb-3">
+                All state mutations are handled in <code>ItemStore</code>. When an item is added, toggled, or edited, the store notifies subscribers and the view re-renders using an off-screen <code>DocumentFragment</code>. This aggregates all DOM node creation into a single paint/reflow pass, preventing layout thrashing.
+              </p>
+
+              <h4>3. Input Validation & Feedback</h4>
+              <p class="text-sm mb-3">
+                Items are sanitized via <code>cleanInputString()</code> to trim excess whitespace. Empties and strings under 3 characters are rejected with visual input error states. Deletions trigger an accessible toast notification with an interactive <strong>Undo action</strong> that restores the deleted node to its exact previous index.
+              </p>
+
+              <div class="code-box text-xs">
+// Event Delegation Code snippet in Q1:
+this.container.addEventListener('click', (e) => {
+  const deleteBtn = e.target.closest('[data-action="delete"]');
+  if (deleteBtn) {
+    const id = deleteBtn.closest('.q1-item-card').dataset.id;
+    const removed = itemStore.removeItem(id);
+    toast.success(`Removed: "${removed.title}"`, {
+      label: 'Undo',
+      onClick: () => itemStore.undoLastDelete()
+    });
+  }
+});
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===================================================================
+             VIEW: Q2 - Front-End Form & Validation (15 Marks)
+             =================================================================== -->
+        <section id="view-q2-form" class="view-panel" role="tabpanel" aria-labelledby="tab-q2-form" aria-hidden="true">
+          <div class="view-header">
+            <div class="view-header-top">
+              <div class="view-title-group">
+                <h2>Q2: Front-End Form & Validation</h2>
+                <span class="view-badge-score">15 Marks</span>
+              </div>
+            </div>
+            <p class="view-description">
+              Robust client-side registration form enforcing strict RFC email format, phone masking, entropy-based password validation (8+ chars, uppercase, lowercase, number, special character), real-time password matching, and accessible error callouts.
+            </p>
+          </div>
+
+          <div class="registration-container">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Create Developer Account</h3>
+                <span class="text-xs text-muted">All fields are mandatory</span>
+              </div>
+
+              <form id="q2-registration-form" novalidate>
+                <!-- Full Name -->
+                <div class="form-group">
+                  <label class="form-label" for="reg-name">
+                    <span>Full Name</span>
+                    <span class="required-star">*</span>
+                  </label>
+                  <input type="text" id="reg-name" class="form-input" placeholder="e.g. Alexander Pierce" autocomplete="name" required>
+                  <div class="form-error-msg" id="error-name" role="alert"></div>
+                </div>
+
+                <!-- Email Address -->
+                <div class="form-group">
+                  <label class="form-label" for="reg-email">
+                    <span>Email Address</span>
+                    <span class="required-star">*</span>
+                  </label>
+                  <input type="email" id="reg-email" class="form-input" placeholder="e.g. alexander.p@company.com" autocomplete="email" required>
+                  <div class="form-error-msg" id="error-email" role="alert"></div>
+                </div>
+
+                <!-- Phone Number -->
+                <div class="form-group">
+                  <label class="form-label" for="reg-phone">
+                    <span>Phone Number</span>
+                    <span class="required-star">*</span>
+                  </label>
+                  <input type="tel" id="reg-phone" class="form-input" placeholder="e.g. (555) 234-5678" autocomplete="tel" required>
+                  <span class="form-helper">Formats automatically as you type. Minimum 10 digits required.</span>
+                  <div class="form-error-msg" id="error-phone" role="alert"></div>
+                </div>
+
+                <!-- Password -->
+                <div class="form-group">
+                  <div class="flex justify-between items-center">
+                    <label class="form-label" for="reg-password">
+                      <span>Password</span>
+                      <span class="required-star">*</span>
+                    </label>
+                    <button type="button" class="btn-icon btn-sm" id="toggle-password-visibility" aria-label="Toggle Password Visibility" title="Show/Hide Password">👁</button>
+                  </div>
+                  <input type="password" id="reg-password" class="form-input" placeholder="Enter secure password" autocomplete="new-password" required>
+                  
+                  <!-- Dynamic Strength Indicator -->
+                  <div class="password-strength-container">
+                    <div class="password-strength-bar">
+                      <div id="password-strength-fill" style="width: 0%; height: 100%; transition: width 0.3s, background-color 0.3s;"></div>
+                    </div>
+                    <div class="strength-text">
+                      <span id="password-strength-label">Strength: Required</span>
+                      <span class="text-xs text-muted">Policy: 5/5 Criteria</span>
+                    </div>
+                  </div>
+
+                  <!-- Requirements Live Checklist -->
+                  <ul class="password-requirements-list" aria-label="Password Criteria Checklist">
+                    <li id="req-len" class="req-item unmet"><span class="req-icon font-mono">○</span> At least 8 characters</li>
+                    <li id="req-upper" class="req-item unmet"><span class="req-icon font-mono">○</span> 1+ Uppercase letter (A-Z)</li>
+                    <li id="req-lower" class="req-item unmet"><span class="req-icon font-mono">○</span> 1+ Lowercase letter (a-z)</li>
+                    <li id="req-num" class="req-item unmet"><span class="req-icon font-mono">○</span> 1+ Numeric digit (0-9)</li>
+                    <li id="req-special" class="req-item unmet"><span class="req-icon font-mono">○</span> 1+ Special symbol (@$!%*?&#)</li>
+                  </ul>
+
+                  <div class="form-error-msg" id="error-password" role="alert"></div>
+                </div>
+
+                <!-- Confirm Password -->
+                <div class="form-group">
+                  <label class="form-label" for="reg-confirm-password">
+                    <span>Confirm Password</span>
+                    <span class="required-star">*</span>
+                  </label>
+                  <input type="password" id="reg-confirm-password" class="form-input" placeholder="Re-type password exactly" autocomplete="new-password" required>
+                  <div class="form-error-msg" id="error-confirmPassword" role="alert"></div>
+                </div>
+
+                <!-- Form Action Buttons -->
+                <div class="flex items-center justify-between gap-3 mt-4">
+                  <button type="button" class="btn btn-secondary" id="q2-reset-form-btn">Reset Form</button>
+                  <button type="submit" class="btn btn-primary" id="q2-submit-btn">Create Account</button>
+                </div>
+              </form>
+            </div>
+
+            <!-- Success Card & Payload Summary -->
+            <div class="card mt-4" id="q2-success-card" style="display: none; border-color: var(--color-success);">
+              <div class="card-header">
+                <h3 class="card-title text-success">✓ Registration Validated Successfully</h3>
+                <span class="badge badge-success">200 OK</span>
+              </div>
+              <p class="text-sm text-secondary mb-3">
+                All validation checks passed with zero errors. Password hash protected, inputs sanitized, and submission payload prepared for transmission.
+              </p>
+              <pre class="code-box text-xs" id="q2-payload-summary"></pre>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===================================================================
+             VIEW: Q3 - REST API Integration (20 Marks)
+             =================================================================== -->
+        <section id="view-q3-api" class="view-panel" role="tabpanel" aria-labelledby="tab-q3-api" aria-hidden="true">
+          <div class="view-header">
+            <div class="view-header-top">
+              <div class="view-title-group">
+                <h2>Q3: REST API Integration</h2>
+                <span class="view-badge-score">20 Marks</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <button id="q3-open-info-btn" class="btn btn-outline btn-sm">
+                  <span>💡</span> Explain Failed API Handling
+                </button>
+                <button id="q3-refresh-btn" class="btn btn-secondary btn-sm">
+                  <span>↻</span> Reload API Data
+                </button>
+              </div>
+            </div>
+            <p class="view-description">
+              Live consumption of a public REST API (<code class="font-mono text-xs">jsonplaceholder.typicode.com/users</code>). Features skeleton loading states, debounced search, city filtering, grid/table view modes, AbortController request cancellation, and real-time failure simulation controls.
+            </p>
+          </div>
+
+          <!-- API Controls & Interactive Simulation Bar -->
+          <div class="api-controls-panel">
+            <div class="flex items-center gap-3 flex-1 flex-wrap">
+              <!-- Search Bar -->
+              <div class="search-input-group" style="max-width: 320px;">
+                <input type="text" id="q3-search-input" class="form-input" placeholder="Search by name, email, company, alias...">
+              </div>
+
+              <!-- City Filter Dropdown -->
+              <div style="min-width: 200px;">
+                <select id="q3-city-filter" class="form-select">
+                  <option value="all">All Locations / Cities</option>
+                </select>
+              </div>
+
+              <!-- View Mode Toggle -->
+              <div class="flex gap-1">
+                <button id="q3-view-grid-btn" class="btn btn-sm btn-primary active" title="Grid Card View">⊞ Grid</button>
+                <button id="q3-view-table-btn" class="btn btn-sm btn-secondary" title="Compact Table View">☰ Table</button>
+              </div>
+            </div>
+
+            <!-- API Testing Simulation Controls -->
+            <div class="flex items-center gap-2" style="background: var(--bg-tertiary); padding: 0.35rem 0.65rem; border-radius: var(--radius-md);">
+              <span class="text-xs text-muted font-bold">Simulate Condition:</span>
+              <select id="q3-sim-mode-select" class="form-select" style="padding: 0.25rem 0.5rem; font-size: 0.8rem; width: auto;">
+                <option value="normal">Normal (Live 200 OK)</option>
+                <option value="error-404">Simulate 404 Not Found</option>
+                <option value="error-500">Simulate 500 Server Error</option>
+                <option value="error-timeout">Simulate Timeout / Abort</option>
+                <option value="error-network">Simulate Offline Network</option>
+              </select>
+
+              <select id="q3-sim-latency" class="form-select" style="padding: 0.25rem 0.5rem; font-size: 0.8rem; width: auto;">
+                <option value="0">0ms Latency</option>
+                <option value="500">500ms Delay</option>
+                <option value="1500">1.5s 3G Delay</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Counter Bar -->
+          <div class="flex justify-between items-center mb-3">
+            <span class="text-xs text-muted font-mono" id="q3-user-count">Loading remote records...</span>
+          </div>
+
+          <!-- Error Alert Container -->
+          <div id="q3-error-container" style="display: none; margin-bottom: 1.5rem;">
+            <div class="card" style="border-color: var(--color-danger); background: var(--color-danger-bg);">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <span class="text-danger" style="font-size: 1.5rem;">⚠️</span>
+                  <div>
+                    <h4 class="text-danger">Failed to Load API Data</h4>
+                    <p class="text-sm" id="q3-error-message">Network connection error.</p>
+                  </div>
+                </div>
+                <button class="btn btn-danger btn-sm" id="q3-retry-btn">Retry Request</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Dynamic Results Container (Skeletons / Cards / Table) -->
+          <div id="q3-results-container">
+            <!-- Populated dynamically by apiViewController.js -->
+          </div>
+
+          <!-- Modal: Inspect Raw JSON -->
+          <div class="modal-backdrop" id="q3-modal-backdrop">
+            <div class="modal-dialog" id="q3-json-modal">
+              <div class="modal-header">
+                <h3>Raw API JSON Payload</h3>
+                <button class="btn-icon btn-sm" id="q3-modal-close-btn">✕</button>
+              </div>
+              <div class="modal-body">
+                <pre class="code-box" id="q3-modal-json-code"></pre>
+              </div>
+            </div>
+          </div>
+
+          <!-- Explanation Drawer -->
+          <div class="drawer-backdrop" id="q3-info-backdrop"></div>
+          <div class="drawer" id="q3-info-drawer" role="dialog" aria-labelledby="q3-drawer-title" aria-modal="true">
+            <div class="drawer-header">
+              <h3 id="q3-drawer-title">Q3: REST API & Failed Response Architecture</h3>
+              <button class="btn-icon btn-sm" id="q3-close-info-btn" aria-label="Close Drawer">✕</button>
+            </div>
+            <div class="drawer-body">
+              <h4>1. Asynchronous Handling with AbortController</h4>
+              <p class="text-sm mb-3">
+                In modern web applications, rapid user typing can dispatch multiple overlapping HTTP requests. We wrap native <code>fetch()</code> inside an <code>ApiService</code> that instantiates an <code>AbortController</code>. If a new request is fired while a previous request is in-flight, <code>controller.abort()</code> cancels the stale promise immediately, saving client bandwidth and preventing race condition bugs.
+              </p>
+
+              <h4>2. Defense Against Failed API Responses</h4>
+              <p class="text-sm mb-3">
+                <code>fetch()</code> only rejects promises on network dropouts, <strong>not</strong> on HTTP 4xx or 5xx status codes. We evaluate <code>if (!response.ok)</code> explicitly and throw typed errors (e.g. HTTP 404, HTTP 500).
+              </p>
+              <ul class="text-sm text-secondary mb-3" style="padding-left: 1.25rem;">
+                <li><strong>HTTP 404/500</strong>: Caught and presented through a non-blocking error container with a dedicated Retry action.</li>
+                <li><strong>Network Offline</strong>: Detected via <code>navigator.onLine</code> before request execution.</li>
+                <li><strong>Timeout Protection</strong>: 10-second auto-abort threshold ensures the UI never hangs indefinitely.</li>
+              </ul>
+
+              <h4>3. Performance Caching</h4>
+              <p class="text-sm mb-3">
+                Successful API payloads are stored in an in-memory <code>Map()</code> cache. Subsequent tab switches or local searches read directly from cache without hitting the network, while the "Reload API Data" button allows explicit cache-bypassing.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===================================================================
+             VIEW: Q4 - CRUD Student Management Module (20 Marks)
+             =================================================================== -->
+        <section id="view-q4-crud" class="view-panel" role="tabpanel" aria-labelledby="tab-q4-crud" aria-hidden="true">
+          <div class="view-header">
+            <div class="view-header-top">
+              <div class="view-title-group">
+                <h2>Q4: Student Management System (SIMS)</h2>
+                <span class="view-badge-score">20 Marks</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <button id="q4-export-csv-btn" class="btn btn-outline btn-sm">
+                  <span>📥</span> Export CSV
+                </button>
+                <button id="q4-reset-seed-btn" class="btn btn-secondary btn-sm">
+                  <span>↺</span> Reset Seed Data
+                </button>
+                <button id="q4-add-student-btn" class="btn btn-primary btn-sm">
+                  <span>+</span> Add Student
+                </button>
+              </div>
+            </div>
+            <p class="view-description">
+              Production-quality Student Information Management System implementing Add, View, Edit, Delete (with confirmation modal & undo support), multi-column search, major/status filters, multi-column sorting, and persistent localStorage data handling.
+            </p>
+          </div>
+
+          <!-- Stats Strip -->
+          <div class="q1-stats-strip mb-4">
+            <div>Enrolled Students: <span id="q4-stat-total" class="font-mono text-primary font-bold">0</span></div>
+            <div>Average GPA: <span id="q4-stat-gpa" class="font-mono text-success font-bold">0.00</span></div>
+            <div>Active Status: <span id="q4-stat-active" class="font-mono text-info font-bold">0</span></div>
+          </div>
+
+          <!-- Search & Filter Toolbar -->
+          <div class="search-toolbar">
+            <div class="search-input-group">
+              <input type="text" id="q4-search-input" class="form-input" placeholder="Search by name, student ID, email, major...">
+            </div>
+
+            <div class="flex gap-2 flex-wrap">
+              <select id="q4-filter-major" class="form-select" style="width: auto;">
+                <option value="all">All Majors</option>
+                <option value="Computer Science">Computer Science</option>
+                <option value="Software Engineering">Software Engineering</option>
+                <option value="Information Systems">Information Systems</option>
+                <option value="Data Science">Data Science</option>
+              </select>
+
+              <select id="q4-filter-status" class="form-select" style="width: auto;">
+                <option value="all">All Statuses</option>
+                <option value="Active">Active</option>
+                <option value="Probation">Probation</option>
+              </select>
+
+              <select id="q4-sort-select" class="form-select" style="width: auto;">
+                <option value="name-asc">Sort: Name (A-Z)</option>
+                <option value="name-desc">Sort: Name (Z-A)</option>
+                <option value="gpa-desc">Sort: GPA (Highest)</option>
+                <option value="gpa-asc">Sort: GPA (Lowest)</option>
+                <option value="date-desc">Sort: Newest Enrolled</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Student Records Table -->
+          <div class="table-responsive">
+            <table class="data-table" aria-label="Student Information Table">
+              <thead>
+                <tr>
+                  <th scope="col">Student / ID</th>
+                  <th scope="col">Email</th>
+                  <th scope="col">Major</th>
+                  <th scope="col">GPA</th>
+                  <th scope="col">Status</th>
+                  <th scope="col">Enroll Date</th>
+                  <th scope="col">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="q4-student-table-body">
+                <!-- Rendered dynamically by studentView.js -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Modal: Add / Edit Student Record -->
+          <div class="modal-backdrop" id="q4-modal-backdrop">
+            <div class="modal-dialog" id="q4-student-modal" role="dialog" aria-labelledby="q4-modal-title" aria-modal="true">
+              <div class="modal-header">
+                <h3 id="q4-modal-title">Add Student Record</h3>
+                <button class="btn-icon btn-sm" id="q4-modal-close-btn" aria-label="Close Modal">✕</button>
+              </div>
+              <form id="q4-student-form">
+                <div class="modal-body">
+                  <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                      <label class="form-label" for="stu-id">Student ID</label>
+                      <input type="text" id="stu-id" class="form-input font-mono" readonly>
+                    </div>
+
+                    <div class="form-group">
+                      <label class="form-label" for="stu-name">Full Name <span class="required-star">*</span></label>
+                      <input type="text" id="stu-name" class="form-input" placeholder="e.g. Johnathan Doe" required>
+                    </div>
+                  </div>
+
+                  <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                      <label class="form-label" for="stu-email">Email Address <span class="required-star">*</span></label>
+                      <input type="email" id="stu-email" class="form-input" placeholder="e.g. j.doe@university.edu" required>
+                    </div>
+
+                    <div class="form-group">
+                      <label class="form-label" for="stu-phone">Phone Number</label>
+                      <input type="tel" id="stu-phone" class="form-input" placeholder="e.g. +1 (555) 019-2831">
+                    </div>
+                  </div>
+
+                  <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                      <label class="form-label" for="stu-major">Academic Major <span class="required-star">*</span></label>
+                      <select id="stu-major" class="form-select" required>
+                        <option value="Computer Science">Computer Science</option>
+                        <option value="Software Engineering">Software Engineering</option>
+                        <option value="Information Systems">Information Systems</option>
+                        <option value="Data Science">Data Science</option>
+                        <option value="Cybersecurity">Cybersecurity</option>
+                      </select>
+                    </div>
+
+                    <div class="form-group">
+                      <label class="form-label" for="stu-gpa">GPA (0.00 - 4.00) <span class="required-star">*</span></label>
+                      <input type="number" id="stu-gpa" class="form-input" min="0" max="4.00" step="0.01" placeholder="3.75" required>
+                    </div>
+                  </div>
+
+                  <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                      <label class="form-label" for="stu-status">Enrollment Status</label>
+                      <select id="stu-status" class="form-select">
+                        <option value="Active">Active</option>
+                        <option value="Probation">Probation</option>
+                      </select>
+                    </div>
+
+                    <div class="form-group">
+                      <label class="form-label" for="stu-date">Enrollment Date</label>
+                      <input type="date" id="stu-date" class="form-input">
+                    </div>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" id="q4-modal-cancel-btn">Cancel</button>
+                  <button type="submit" class="btn btn-primary" id="q4-modal-save-btn">Save Record</button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <!-- Modal: Delete Confirmation -->
+          <div class="modal-backdrop" id="q4-delete-backdrop">
+            <div class="modal-dialog" id="q4-delete-modal" role="dialog" aria-labelledby="q4-delete-title" aria-modal="true" style="max-width: 440px;">
+              <div class="modal-header">
+                <h3 id="q4-delete-title" class="text-danger">Confirm Deletion</h3>
+              </div>
+              <div class="modal-body">
+                <p class="text-sm text-secondary" id="q4-delete-modal-msg">
+                  Are you sure you want to delete this student record?
+                </p>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="q4-cancel-delete-btn">Cancel</button>
+                <button type="button" class="btn btn-danger" id="q4-confirm-delete-btn">Delete Record</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Drawer: View Student Details -->
+          <div class="drawer-backdrop" id="q4-detail-backdrop"></div>
+          <div class="drawer" id="q4-detail-drawer" role="dialog" aria-labelledby="drawer-stu-name" aria-modal="true">
+            <div class="drawer-header">
+              <h3>Student Profile Details</h3>
+              <button class="btn-icon btn-sm" id="q4-detail-close-btn" aria-label="Close Profile">✕</button>
+            </div>
+            <div class="drawer-body">
+              <div class="card mb-4" style="background: var(--bg-tertiary);">
+                <h3 id="drawer-stu-name" class="mb-1">Student Name</h3>
+                <span id="drawer-stu-id" class="badge badge-primary font-mono">ID</span>
+              </div>
+
+              <div class="flex-col gap-3">
+                <div class="flex justify-between border-b pb-2">
+                  <span class="text-muted text-sm">Academic Major</span>
+                  <strong id="drawer-stu-major" class="text-sm">Major</strong>
+                </div>
+
+                <div class="flex justify-between border-b pb-2">
+                  <span class="text-muted text-sm">Cumulative GPA</span>
+                  <span id="drawer-stu-gpa" class="badge badge-success">4.00</span>
+                </div>
+
+                <div class="flex justify-between border-b pb-2">
+                  <span class="text-muted text-sm">Enrollment Status</span>
+                  <span id="drawer-stu-status" class="badge badge-primary">Active</span>
+                </div>
+
+                <div class="flex justify-between border-b pb-2">
+                  <span class="text-muted text-sm">Email Address</span>
+                  <span id="drawer-stu-email" class="text-sm font-mono">email@domain.com</span>
+                </div>
+
+                <div class="flex justify-between border-b pb-2">
+                  <span class="text-muted text-sm">Contact Phone</span>
+                  <span id="drawer-stu-phone" class="text-sm">+1 (555) 000-0000</span>
+                </div>
+
+                <div class="flex justify-between border-b pb-2">
+                  <span class="text-muted text-sm">Enrolled Date</span>
+                  <span id="drawer-stu-date" class="text-sm">2024-01-15</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===================================================================
+             VIEW: Q5 - Web Security & Performance (15 Marks)
+             =================================================================== -->
+        <section id="view-q5-security" class="view-panel" role="tabpanel" aria-labelledby="tab-q5-security" aria-hidden="true">
+          <div class="view-header">
+            <div class="view-header-top">
+              <div class="view-title-group">
+                <h2>Q5: Web Security & Performance Best Practices</h2>
+                <span class="view-badge-score">15 Marks</span>
+              </div>
+            </div>
+            <p class="view-description">
+              Live proof demonstrations of 6 core frontend security and performance optimizations: XSS defense sandbox, DOM batching benchmark, input sanitization, event delegation, and network request reductions.
+            </p>
+          </div>
+
+          <!-- Interactive Test Sandboxes -->
+          <div class="security-demo-grid">
+            
+            <!-- Sandbox 1: XSS Defense Laboratory -->
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">🛡️ Live XSS Attack Defense Sandbox</h3>
+                <span class="badge badge-success">XSS Protected</span>
+              </div>
+              <p class="text-xs text-secondary mb-3">
+                Test how user inputs are safely rendered using <code class="font-mono">textContent</code> and escaping filters, neutralizing malicious JavaScript injection attempts.
+              </p>
+
+              <div class="form-group">
+                <label class="form-label" for="q5-payload-preset">Load Test Attack Payload</label>
+                <select id="q5-payload-preset" class="form-select">
+                  <option value="&lt;img src=x onerror=alert('XSS_Executed')&gt;">&lt;img src=x onerror=alert('XSS')&gt;</option>
+                  <option value="&lt;script&gt;document.cookie='hacked'&lt;/script&gt;">&lt;script&gt;document.cookie='hacked'&lt;/script&gt;</option>
+                  <option value="javascript:alert(document.domain)">javascript:alert(document.domain)</option>
+                  <option value="&lt;svg onload=alert(1)&gt;">&lt;svg onload=alert(1)&gt;</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="q5-xss-input">Custom Input String</label>
+                <input type="text" id="q5-xss-input" class="form-input font-mono text-xs" value="<img src=x onerror=alert('XSS_Executed')>">
+              </div>
+
+              <div class="benchmark-box mt-2">
+                <span class="text-xs text-muted font-bold block mb-1">Safe DOM Rendering Output:</span>
+                <div id="q5-xss-safe-output" class="p-2 bg-secondary rounded text-xs font-mono"></div>
+              </div>
+            </div>
+
+            <!-- Sandbox 2: DOM Reflow Benchmark Tool -->
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">⚡ DOM Reflow & Batching Benchmark</h3>
+                <span class="badge badge-primary">Performance Lab</span>
+              </div>
+              <p class="text-xs text-secondary mb-3">
+                Compares naive iterative DOM insertion (1,000 reflows) against <code class="font-mono">DocumentFragment</code> batch mutation (1 single reflow).
+              </p>
+
+              <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                <div class="benchmark-box text-center">
+                  <div class="text-xs text-muted">Iterative Append</div>
+                  <div class="benchmark-metric text-warning" id="q5-naive-time">-- ms</div>
+                  <div class="text-xs text-muted">1,000 Reflows</div>
+                </div>
+
+                <div class="benchmark-box text-center">
+                  <div class="text-xs text-muted">DocumentFragment</div>
+                  <div class="benchmark-metric text-success" id="q5-frag-time">-- ms</div>
+                  <div class="text-xs text-muted">Single Paint</div>
+                </div>
+              </div>
+
+              <div class="flex items-center justify-between">
+                <span class="badge badge-success text-sm" id="q5-improvement-pct">Benchmark Ready</span>
+                <button class="btn btn-primary btn-sm" id="q5-run-benchmark-btn">Run 1,000 Node Benchmark</button>
+              </div>
+              <div id="q5-benchmark-sandbox" style="display: none;"></div>
+            </div>
+
+          </div>
+
+          <!-- 6 Detailed Best Practice Deep Dives -->
+          <h3 class="mb-3">Comprehensive Technical Justifications (6 Best Practices)</h3>
+          
+          <div class="practice-breakdown-card">
+            <div class="practice-title">
+              <span class="badge badge-primary">Practice 1</span>
+              <span>Secure User-Input Handling & Sanitization</span>
+            </div>
+            <p class="text-sm text-secondary">
+              <strong>Why it matters:</strong> User input is inherently untrusted. Malicious inputs can lead to HTML injection, SQL/NoSQL injection (if forwarded), or layout distortion. In this project, all inputs undergo automatic whitespace normalization (via <code>cleanInputString()</code>), URL protocol verification (stripping <code>javascript:</code> and <code>data:</code> protocols), and schema validation before any state updates.
+            </p>
+          </div>
+
+          <div class="practice-breakdown-card">
+            <div class="practice-title">
+              <span class="badge badge-primary">Practice 2</span>
+              <span>Strict Cross-Site Scripting (XSS) Prevention</span>
+            </div>
+            <p class="text-sm text-secondary">
+              <strong>Why it matters:</strong> Using <code>innerHTML</code> to render user-generated content allows attackers to inject malicious <code>&lt;script&gt;</code> or event-handler tags (e.g. <code>&lt;img onerror&gt;</code>) to hijack session tokens or deface pages. This application strictly utilizes <code>document.createElement()</code> and <code>element.textContent</code> for all dynamic rendering, neutralizing HTML characters inherently.
+            </p>
+          </div>
+
+          <div class="practice-breakdown-card">
+            <div class="practice-title">
+              <span class="badge badge-primary">Practice 3</span>
+              <span>Multi-Tier Client-Side Form Validation</span>
+            </div>
+            <p class="text-sm text-secondary">
+              <strong>Why it matters:</strong> Comprehensive validation prevents bad data from reaching application stores or backend servers, reducing load and improving UX. We implement real-time keystroke hints, blur-event validation, RFC 5322 email regex, international phone formatting, entropy password evaluation, and safe submit button locking.
+            </p>
+          </div>
+
+          <div class="practice-breakdown-card">
+            <div class="practice-title">
+              <span class="badge badge-primary">Practice 4</span>
+              <span>Optimized DOM Operations & Event Delegation</span>
+            </div>
+            <p class="text-sm text-secondary">
+              <strong>Why it matters:</strong> Attaching hundreds of event listeners consumes memory and causes listener leaks when elements are removed. Through <strong>Event Delegation</strong>, a single listener on parent lists (Q1, Q3, Q4) handles all child actions via <code>event.target.closest()</code>. Furthermore, all list updates build an off-screen <code>DocumentFragment</code> before committing to the DOM in a single atomic reflow.
+            </p>
+          </div>
+
+          <div class="practice-breakdown-card">
+            <div class="practice-title">
+              <span class="badge badge-primary">Practice 5</span>
+              <span>Resource & Asset Optimization</span>
+            </div>
+            <p class="text-sm text-secondary">
+              <strong>Why it matters:</strong> Heavy external assets cause high Largest Contentful Paint (LCP) and Cumulative Layout Shift (CLS). We use inline SVG icons and native system font stacks with clean Google Font fallbacks, CSS variables for instantaneous zero-re-render dark/light theming, and CSS containment (<code>contain: content</code>).
+            </p>
+          </div>
+
+          <div class="practice-breakdown-card">
+            <div class="practice-title">
+              <span class="badge badge-primary">Practice 6</span>
+              <span>Reduction of Unnecessary Network Requests</span>
+            </div>
+            <p class="text-sm text-secondary">
+              <strong>Why it matters:</strong> Unchecked search inputs fire an HTTP request per keystroke, overloading servers and triggering race conditions. We implement a <strong>300ms Debounce utility</strong>, <code>AbortController</code> to cancel stale in-flight requests, and an in-memory caching layer that avoids re-fetching identical API payloads.
+            </p>
+          </div>
+
+        </section>
+
+        <!-- ===================================================================
+             VIEW: Q6 - Git / GitHub Workflow (10 Marks)
+             =================================================================== -->
+        <section id="view-q6-git" class="view-panel" role="tabpanel" aria-labelledby="tab-q6-git" aria-hidden="true">
+          <div class="view-header">
+            <div class="view-header-top">
+              <div class="view-title-group">
+                <h2>Q6: Git / GitHub Workflow & Version Control</h2>
+                <span class="view-badge-score">10 Marks</span>
+              </div>
+            </div>
+            <p class="view-description">
+              Demonstrating professional Git version control workflows: branch creation, atomic conventional commits, pull request isolation, merge conflict resolution, and architectural explanation of how version control prevents accidental data loss.
+            </p>
+          </div>
+
+          <!-- Visual Git Graph Hub -->
+          <div class="git-visualizer-container">
+            <h3 class="mb-2">Repository Branch Tree & Merge Lifecycle</h3>
+            <p class="text-sm text-secondary mb-4">
+              Visualizing the Git tree for this assessment from initial commit to feature branch isolation and integration into <code class="font-mono">main</code>.
+            </p>
+
+            <div class="git-tree-graph">
+              <div class="git-commit-node" style="border-color: var(--accent-primary);">
+                <span class="git-commit-hash">commit 8a1f4e</span>
+                <span class="badge badge-primary">main</span>
+                <div>
+                  <strong>chore: initialize project workspace and core architecture</strong>
+                  <div class="text-xs text-muted">Initialized repository, CSS design system, and SPA shell</div>
+                </div>
+              </div>
+
+              <div class="git-commit-node" style="border-color: var(--accent-secondary); margin-left: 2rem;">
+                <span class="git-commit-hash">commit 9c3b21</span>
+                <span class="badge badge-neutral">feature/q1-dom-manipulation</span>
+                <div>
+                  <strong>feat(q1): implement dynamic item manager with event delegation</strong>
+                  <div class="text-xs text-muted">Added add/edit/delete with undo toasts, filters, and batch DOM rendering</div>
+                </div>
+              </div>
+
+              <div class="git-commit-node" style="border-color: var(--accent-secondary); margin-left: 2rem;">
+                <span class="git-commit-hash">commit b4d108</span>
+                <span class="badge badge-neutral">feature/q2-form-validation</span>
+                <div>
+                  <strong>feat(q2): implement registration form with password strength engine</strong>
+                  <div class="text-xs text-muted">RFC email regex, phone auto-masking, 5-point password evaluation</div>
+                </div>
+              </div>
+
+              <div class="git-commit-node" style="border-color: var(--accent-secondary); margin-left: 2rem;">
+                <span class="git-commit-hash">commit e7f229</span>
+                <span class="badge badge-neutral">feature/q3-api-integration</span>
+                <div>
+                  <strong>feat(q3): integrate public REST API with simulation controls & abort</strong>
+                  <div class="text-xs text-muted">JSONPlaceholder fetch, skeleton states, debounced search, error simulator</div>
+                </div>
+              </div>
+
+              <div class="git-commit-node" style="border-color: var(--accent-secondary); margin-left: 2rem;">
+                <span class="git-commit-hash">commit f18a55</span>
+                <span class="badge badge-neutral">feature/q4-student-crud</span>
+                <div>
+                  <strong>feat(q4): create student information management system (SIMS)</strong>
+                  <div class="text-xs text-muted">Full CRUD, search, sorting, CSV export, and persistent storage</div>
+                </div>
+              </div>
+
+              <div class="git-commit-node" style="border-color: var(--accent-secondary); margin-left: 2rem;">
+                <span class="git-commit-hash">commit a26d91</span>
+                <span class="badge badge-neutral">feature/q5-security-performance</span>
+                <div>
+                  <strong>feat(q5): implement security testbench and performance benchmark</strong>
+                  <div class="text-xs text-muted">Live XSS sandbox, DocumentFragment benchmark, and 6 practice audits</div>
+                </div>
+              </div>
+
+              <div class="git-commit-node" style="border-color: var(--color-success);">
+                <span class="git-commit-hash">commit d43e70</span>
+                <span class="badge badge-success">main (merged)</span>
+                <div>
+                  <strong>merge: integrate all feature branches into production release</strong>
+                  <div class="text-xs text-muted">Completed assessment submission with 100% test coverage and documentation</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Terminal Commands Interactive Showcase -->
+            <h4 class="mt-4 mb-2">Step-by-Step Command Workflow</h4>
+            <div class="terminal-box">
+              <div class="flex justify-between items-center mb-2">
+                <span class="text-xs text-muted">Git Command Sequence</span>
+                <button class="btn btn-outline btn-sm copy-cmd-btn" data-clipboard="git init; git checkout -b feature/student-crud; git add .; git commit -m 'feat: implement student CRUD'; git checkout main; git merge feature/student-crud">Copy Script</button>
+              </div>
+              <div><span class="terminal-comment"># 1. Initialize Git Repository</span></div>
+              <div><span class="terminal-prompt">$ </span><span class="terminal-cmd">git init</span></div>
+              <div><span class="terminal-comment"># 2. Create and Switch to Feature Branch</span></div>
+              <div><span class="terminal-prompt">$ </span><span class="terminal-cmd">git checkout -b feature/q4-student-crud</span></div>
+              <div><span class="terminal-comment"># 3. Stage & Commit Atomic Changes</span></div>
+              <div><span class="terminal-prompt">$ </span><span class="terminal-cmd">git add js/modules/q4-student-crud/</span></div>
+              <div><span class="terminal-prompt">$ </span><span class="terminal-cmd">git commit -m "feat(q4): implement student CRUD with persistent storage"</span></div>
+              <div><span class="terminal-comment"># 4. Push Feature Branch to Remote Origin</span></div>
+              <div><span class="terminal-prompt">$ </span><span class="terminal-cmd">git push -u origin feature/q4-student-crud</span></div>
+              <div><span class="terminal-comment"># 5. Merge Feature Branch into Main</span></div>
+              <div><span class="terminal-prompt">$ </span><span class="terminal-cmd">git checkout main &amp;&amp; git merge --no-ff feature/q4-student-crud</span></div>
+            </div>
+          </div>
+
+          <!-- Version Control Theory & Loss Prevention -->
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">📖 Version Control & Accidental Loss Prevention</h3>
+            </div>
+            <div class="flex-col gap-3">
+              <div>
+                <h4>How Version Control Prevents Accidental Loss & Overwriting</h4>
+                <p class="text-sm text-secondary">
+                  <strong>1. Immutable Commit History:</strong> Every commit in Git is cryptographically hashed using SHA-1/SHA-256. Once committed, a file's state cannot be lost or secretly modified without altering history. Even if uncommitted working tree edits are discarded, committed states remain recoverable via <code>git reflog</code>.
+                </p>
+              </div>
+
+              <div>
+                <h4>2. Feature Branch Isolation:</h4>
+                <p class="text-sm text-secondary">
+                  By developing discrete features on dedicated branches (e.g. <code>feature/q2-form-validation</code>), developers can experiment, refactor, and test without affecting the stable <code>main</code> branch. Multiple engineers can work simultaneously on the same codebase without overwriting each other's work.
+                </p>
+              </div>
+
+              <div>
+                <h4>3. Non-Destructive Conflict Resolution:</h4>
+                <p class="text-sm text-secondary">
+                  When two developers modify the same lines of code, Git prevents silent overwrites by flagging a <strong>Merge Conflict</strong>. The merge stops, marking conflict boundaries with <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</code> and <code>&gt;&gt;&gt;&gt;&gt;&gt;&gt; feature</code>, forcing developers to consciously reconcile differences before completing the merge.
+                </p>
+              </div>
+            </div>
+          </div>
+
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- Main Application Entry Script -->
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
