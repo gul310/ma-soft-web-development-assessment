@@ -183,5 +183,62 @@ export const ValidationRules = {
       return { isValid: false, message: 'GPA must be a valid number between 0.00 and 4.00.' };
     }
     return { isValid: true, message: '' };
+  },
+
+  /**
+   * Validates Student ID (Required, format, uniqueness check)
+   */
+  validateStudentID(id, existingStudents = [], currentId = null) {
+    if (!id || typeof id !== 'string' || !id.trim()) {
+      return { isValid: false, message: 'Student ID is required.' };
+    }
+    const cleanId = id.trim().toUpperCase();
+    if (cleanId.length < 3 || cleanId.length > 20) {
+      return { isValid: false, message: 'Student ID must be between 3 and 20 characters.' };
+    }
+    if (!/^[A-Z0-9\-_]+$/i.test(cleanId)) {
+      return { isValid: false, message: 'Student ID may only contain letters, numbers, hyphens, and underscores.' };
+    }
+    // Uniqueness check
+    const isDuplicate = existingStudents.some(s => s.id.toUpperCase() === cleanId && s.id !== currentId);
+    if (isDuplicate) {
+      return { isValid: false, message: `Student ID "${cleanId}" is already assigned to another student.` };
+    }
+    return { isValid: true, message: '', normalizedId: cleanId };
+  },
+
+  /**
+   * Validates Academic Program / Course
+   */
+  validateProgram(program) {
+    if (!program || typeof program !== 'string' || !program.trim()) {
+      return { isValid: false, message: 'Academic program / course is required.' };
+    }
+    return { isValid: true, message: '' };
+  },
+
+  /**
+   * Validates Semester
+   */
+  validateSemester(semester) {
+    if (semester === undefined || semester === null || String(semester).trim() === '') {
+      return { isValid: false, message: 'Semester is required.' };
+    }
+    const semNum = parseInt(semester, 10);
+    if (isNaN(semNum) || semNum < 1 || semNum > 12) {
+      return { isValid: false, message: 'Semester must be a valid term between 1 and 12.' };
+    }
+    return { isValid: true, message: '' };
+  },
+
+  /**
+   * Validates Student Status
+   */
+  validateStatus(status) {
+    const validStatuses = ['Active', 'Inactive', 'Probation'];
+    if (!status || !validStatuses.includes(status)) {
+      return { isValid: false, message: 'Status must be Active, Inactive, or Probation.' };
+    }
+    return { isValid: true, message: '' };
   }
 };

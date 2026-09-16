@@ -1,5 +1,6 @@
 /**
- * Q4 Student Controller: Student Management Module (Full CRUD + Search + Sort + Export)
+ * Q4 Student Controller: Student Management Module (Full CRUD + Search + Sort + Filters + Export)
+ * Orchestrates Model and View layers with validation, accessibility, and local persistence.
  */
 
 import { qs, qsa, createElement } from '../../utils/dom.js';
@@ -18,24 +19,28 @@ export class StudentController {
     this.currentEditingId = null;
     this.studentToDelete = null;
     this.searchQuery = '';
-    this.majorFilter = 'all';
+    this.programFilter = 'all';
     this.statusFilter = 'all';
+    this.semesterFilter = 'all';
     this.sortBy = 'name-asc';
     this.isInitialized = false;
   }
 
   init() {
-    if (this.isInitialized) return;
+    if (!this.view) {
+      this.view = new StudentView();
+    }
 
-    this.view = new StudentView();
-    this.setupEventListeners();
+    if (!this.isInitialized) {
+      this.setupEventListeners();
+      this.isInitialized = true;
+    }
+
     this.render();
 
     eventBus.on('q4:studentsChanged', () => {
       this.render();
     });
-
-    this.isInitialized = true;
   }
 
   setupEventListeners() {
@@ -49,10 +54,10 @@ export class StudentController {
     }
 
     // 2. Filter Selects
-    const majorSelect = qs('#q4-filter-major');
-    if (majorSelect) {
-      majorSelect.addEventListener('change', (e) => {
-        this.majorFilter = e.target.value;
+    const programSelect = qs('#q4-filter-major') || qs('#q4-filter-program');
+    if (programSelect) {
+      programSelect.addEventListener('change', (e) => {
+        this.programFilter = e.target.value;
         this.render();
       });
     }
@@ -61,6 +66,14 @@ export class StudentController {
     if (statusSelect) {
       statusSelect.addEventListener('change', (e) => {
         this.statusFilter = e.target.value;
+        this.render();
+      });
+    }
+
+    const semesterSelect = qs('#q4-filter-semester');
+    if (semesterSelect) {
+      semesterSelect.addEventListener('change', (e) => {
+        this.semesterFilter = e.target.value;
         this.render();
       });
     }
@@ -74,7 +87,7 @@ export class StudentController {
       });
     }
 
-    // 4. Add Student Modal Open
+    // 4. Add Student Modal Open Trigger
     const addBtn = qs('#q4-add-student-btn');
     if (addBtn) {
       addBtn.addEventListener('click', () => {
@@ -91,7 +104,7 @@ export class StudentController {
       });
     }
 
-    // 6. Modal Close Buttons
+    // 6. Modal Close / Cancel Buttons
     const modalCloseBtn = qs('#q4-modal-close-btn');
     const modalCancelBtn = qs('#q4-modal-cancel-btn');
     const modalBackdrop = qs('#q4-modal-backdrop');
@@ -117,7 +130,7 @@ export class StudentController {
           const deleted = studentModel.delete(this.studentToDelete.id);
           this.closeDeleteModal();
           if (deleted) {
-            toast.success(`Deleted student: ${deleted.name}`, {
+            toast.success(`Deleted student: ${deleted.name} (${deleted.id})`, {
               label: 'Undo',
               onClick: () => {
                 const restored = studentModel.undoDelete();
@@ -155,7 +168,7 @@ export class StudentController {
     if (resetBtn) {
       resetBtn.addEventListener('click', () => {
         studentModel.resetToInitial();
-        toast.info('Student records reset to demo dataset.');
+        toast.info('Student database reset to assessment seed dataset.');
       });
     }
   }
@@ -163,37 +176,50 @@ export class StudentController {
   getFilteredStudents() {
     let students = studentModel.getAll();
 
-    // Text Search
+    // 1. Text Search across multiple fields
     if (this.searchQuery) {
       students = students.filter(s =>
         s.name.toLowerCase().includes(this.searchQuery) ||
-        s.email.toLowerCase().includes(this.searchQuery) ||
         s.id.toLowerCase().includes(this.searchQuery) ||
-        s.major.toLowerCase().includes(this.searchQuery)
+        s.email.toLowerCase().includes(this.searchQuery) ||
+        (s.phone && s.phone.toLowerCase().includes(this.searchQuery)) ||
+        (s.program && s.program.toLowerCase().includes(this.searchQuery)) ||
+        (s.major && s.major.toLowerCase().includes(this.searchQuery)) ||
+        String(s.semester).includes(this.searchQuery) ||
+        s.status.toLowerCase().includes(this.searchQuery)
       );
     }
 
-    // Major Filter
-    if (this.majorFilter !== 'all') {
-      students = students.filter(s => s.major === this.majorFilter);
+    // 2. Program / Major Filter
+    if (this.programFilter !== 'all') {
+      students = students.filter(s => (s.program === this.programFilter || s.major === this.programFilter));
     }
 
-    // Status Filter
+    // 3. Status Filter
     if (this.statusFilter !== 'all') {
       students = students.filter(s => s.status === this.statusFilter);
     }
 
-    // Sorting
+    // 4. Semester Filter
+    if (this.semesterFilter !== 'all') {
+      students = students.filter(s => String(s.semester) === String(this.semesterFilter));
+    }
+
+    // 5. Multi-criteria Sorting
     students.sort((a, b) => {
       switch (this.sortBy) {
         case 'name-asc':
           return a.name.localeCompare(b.name);
         case 'name-desc':
           return b.name.localeCompare(a.name);
+        case 'id-asc':
+          return a.id.localeCompare(b.id);
         case 'gpa-desc':
-          return b.gpa - a.gpa;
+          return (b.gpa || 0) - (a.gpa || 0);
         case 'gpa-asc':
-          return a.gpa - b.gpa;
+          return (a.gpa || 0) - (b.gpa || 0);
+        case 'sem-asc':
+          return parseInt(a.semester || '1', 10) - parseInt(b.semester || '1', 10);
         case 'date-desc':
           return (b.enrollDate || '').localeCompare(a.enrollDate || '');
         default:
@@ -206,10 +232,15 @@ export class StudentController {
 
   render() {
     const students = this.getFilteredStudents();
+    const allStudents = studentModel.getAll();
+
     this.view.renderTable(students, {
+      totalCount: allStudents.length,
       onView: (student) => this.openDetailDrawer(student),
       onEdit: (student) => this.openEditModal(student),
-      onDelete: (student) => this.openDeleteModal(student)
+      onDelete: (student) => this.openDeleteModal(student),
+      onClearSearch: () => this.clearSearchFilters(),
+      onAddFirst: () => this.openAddModal()
     });
 
     const stats = studentModel.getStats();
@@ -217,44 +248,92 @@ export class StudentController {
     appStore.setState({ q4Stats: { totalStudents: stats.total, avgGpa: stats.avgGpa } });
   }
 
+  clearSearchFilters() {
+    this.searchQuery = '';
+    this.programFilter = 'all';
+    this.statusFilter = 'all';
+    this.semesterFilter = 'all';
+
+    const searchInput = qs('#q4-search-input');
+    const programSelect = qs('#q4-filter-major') || qs('#q4-filter-program');
+    const statusSelect = qs('#q4-filter-status');
+    const semesterSelect = qs('#q4-filter-semester');
+
+    if (searchInput) searchInput.value = '';
+    if (programSelect) programSelect.value = 'all';
+    if (statusSelect) statusSelect.value = 'all';
+    if (semesterSelect) semesterSelect.value = 'all';
+
+    this.render();
+  }
+
   openAddModal() {
     this.currentEditingId = null;
     const form = qs('#q4-student-form');
     const modalTitle = qs('#q4-modal-title');
     const idInput = qs('#stu-id');
+    const saveBtn = qs('#q4-modal-save-btn');
 
     if (form) form.reset();
     if (modalTitle) modalTitle.textContent = 'Add New Student Record';
+    if (saveBtn) saveBtn.textContent = 'Save Student Record';
+
     if (idInput) {
-      idInput.value = `STU-${Math.floor(1000 + Math.random() * 9000)}`;
-      idInput.readOnly = true;
+      // Auto-generate next candidate ID, editable by user if desired
+      const nextNum = 1000 + studentModel.getAll().length + 1;
+      idInput.value = `STU-${nextNum}`;
+      idInput.readOnly = false;
+      idInput.removeAttribute('aria-invalid');
     }
+
+    this.clearFormValidationStates();
 
     const modal = qs('#q4-student-modal');
     const backdrop = qs('#q4-modal-backdrop');
     if (modal) modal.classList.add('open');
     if (backdrop) backdrop.classList.add('open');
+
+    setTimeout(() => {
+      qs('#stu-name')?.focus();
+    }, 100);
   }
 
   openEditModal(student) {
     this.currentEditingId = student.id;
     const modalTitle = qs('#q4-modal-title');
-    if (modalTitle) modalTitle.textContent = `Edit Student: ${student.name}`;
+    const saveBtn = qs('#q4-modal-save-btn');
+    const idInput = qs('#stu-id');
 
-    qs('#stu-id').value = student.id;
-    qs('#stu-id').readOnly = true;
-    qs('#stu-name').value = student.name;
-    qs('#stu-email').value = student.email;
-    qs('#stu-phone').value = student.phone || '';
-    qs('#stu-major').value = student.major;
-    qs('#stu-gpa').value = student.gpa;
-    qs('#stu-status').value = student.status;
-    qs('#stu-date').value = student.enrollDate || '';
+    if (modalTitle) modalTitle.textContent = `Edit Student: ${student.name}`;
+    if (saveBtn) saveBtn.textContent = 'Update Student Record';
+
+    if (idInput) {
+      idInput.value = student.id;
+      idInput.readOnly = true; // Protect unique primary key
+    }
+
+    if (qs('#stu-name')) qs('#stu-name').value = student.name;
+    if (qs('#stu-email')) qs('#stu-email').value = student.email;
+    if (qs('#stu-phone')) qs('#stu-phone').value = student.phone || '';
+    
+    const progEl = qs('#stu-program') || qs('#stu-major');
+    if (progEl) progEl.value = student.program || student.major || 'Software Engineering';
+
+    if (qs('#stu-semester')) qs('#stu-semester').value = student.semester || '1';
+    if (qs('#stu-gpa')) qs('#stu-gpa').value = student.gpa || 3.0;
+    if (qs('#stu-status')) qs('#stu-status').value = student.status || 'Active';
+    if (qs('#stu-date')) qs('#stu-date').value = student.enrollDate || '';
+
+    this.clearFormValidationStates();
 
     const modal = qs('#q4-student-modal');
     const backdrop = qs('#q4-modal-backdrop');
     if (modal) modal.classList.add('open');
     if (backdrop) backdrop.classList.add('open');
+
+    setTimeout(() => {
+      qs('#stu-name')?.focus();
+    }, 100);
   }
 
   closeModal() {
@@ -263,48 +342,110 @@ export class StudentController {
     if (modal) modal.classList.remove('open');
     if (backdrop) backdrop.classList.remove('open');
     this.currentEditingId = null;
+    this.clearFormValidationStates();
+  }
+
+  clearFormValidationStates() {
+    qsa('#q4-student-form [aria-invalid]').forEach(el => {
+      el.removeAttribute('aria-invalid');
+    });
   }
 
   handleFormSubmit() {
-    const id = qs('#stu-id').value;
-    const name = cleanInputString(qs('#stu-name').value);
-    const email = cleanInputString(qs('#stu-email').value);
-    const phone = cleanInputString(qs('#stu-phone').value);
-    const major = qs('#stu-major').value;
-    const gpa = parseFloat(qs('#stu-gpa').value);
-    const status = qs('#stu-status').value;
-    const enrollDate = qs('#stu-date').value;
+    const rawId = qs('#stu-id') ? qs('#stu-id').value : '';
+    const name = cleanInputString(qs('#stu-name')?.value || '');
+    const email = cleanInputString(qs('#stu-email')?.value || '');
+    const phone = cleanInputString(qs('#stu-phone')?.value || '');
+    const progEl = qs('#stu-program') || qs('#stu-major');
+    const program = progEl ? progEl.value : 'Software Engineering';
+    const semester = qs('#stu-semester') ? qs('#stu-semester').value : '1';
+    const gpaRaw = qs('#stu-gpa') ? qs('#stu-gpa').value : '3.0';
+    const status = qs('#stu-status') ? qs('#stu-status').value : 'Active';
+    const enrollDate = qs('#stu-date') ? qs('#stu-date').value : '';
 
-    // Field Validations
+    const allStudents = studentModel.getAll();
+
+    // 1. Student ID Validation
+    const idCheck = ValidationRules.validateStudentID(rawId, allStudents, this.currentEditingId);
+    if (!idCheck.isValid) {
+      toast.error(idCheck.message);
+      const el = qs('#stu-id');
+      if (el) { el.setAttribute('aria-invalid', 'true'); el.focus(); }
+      return;
+    }
+
+    // 2. Full Name Validation
     const nameCheck = ValidationRules.validateName(name);
     if (!nameCheck.isValid) {
       toast.error(nameCheck.message);
-      qs('#stu-name').focus();
+      const el = qs('#stu-name');
+      if (el) { el.setAttribute('aria-invalid', 'true'); el.focus(); }
       return;
     }
 
+    // 3. Email Address Validation
     const emailCheck = ValidationRules.validateEmail(email);
     if (!emailCheck.isValid) {
       toast.error(emailCheck.message);
-      qs('#stu-email').focus();
+      const el = qs('#stu-email');
+      if (el) { el.setAttribute('aria-invalid', 'true'); el.focus(); }
       return;
     }
 
-    const gpaCheck = ValidationRules.validateGPA(gpa);
-    if (!gpaCheck.isValid) {
-      toast.error(gpaCheck.message);
-      qs('#stu-gpa').focus();
+    // 4. Phone Number Validation
+    const phoneCheck = ValidationRules.validatePhone(phone);
+    if (!phoneCheck.isValid) {
+      toast.error(phoneCheck.message);
+      const el = qs('#stu-phone');
+      if (el) { el.setAttribute('aria-invalid', 'true'); el.focus(); }
       return;
     }
 
-    const payload = { id, name, email, phone, major, gpa, status, enrollDate };
+    // 5. Program Validation
+    const progCheck = ValidationRules.validateProgram(program);
+    if (!progCheck.isValid) {
+      toast.error(progCheck.message);
+      if (progEl) { progEl.setAttribute('aria-invalid', 'true'); progEl.focus(); }
+      return;
+    }
+
+    // 6. Semester Validation
+    const semCheck = ValidationRules.validateSemester(semester);
+    if (!semCheck.isValid) {
+      toast.error(semCheck.message);
+      const el = qs('#stu-semester');
+      if (el) { el.setAttribute('aria-invalid', 'true'); el.focus(); }
+      return;
+    }
+
+    // 7. Status Validation
+    const statusCheck = ValidationRules.validateStatus(status);
+    if (!statusCheck.isValid) {
+      toast.error(statusCheck.message);
+      const el = qs('#stu-status');
+      if (el) { el.setAttribute('aria-invalid', 'true'); el.focus(); }
+      return;
+    }
+
+    const payload = {
+      id: idCheck.normalizedId,
+      name,
+      email,
+      phone,
+      program,
+      major: program,
+      semester,
+      gpa: parseFloat(gpaRaw) || 3.0,
+      status,
+      enrollDate: enrollDate || new Date().toISOString().split('T')[0]
+    };
 
     if (this.currentEditingId) {
       studentModel.update(this.currentEditingId, payload);
-      toast.success(`Student record updated for ${name}`);
+      toast.success(`Updated student record: ${name} (${payload.id})`);
     } else {
       studentModel.create(payload);
-      toast.success(`Created student record: ${name}`);
+      toast.success(`Added student record: ${name} (${payload.id})`);
     }
 
     this.closeModal();
@@ -314,14 +455,18 @@ export class StudentController {
     const drawer = qs('#q4-detail-drawer');
     const backdrop = qs('#q4-detail-backdrop');
 
-    qs('#drawer-stu-name').textContent = student.name;
-    qs('#drawer-stu-id').textContent = student.id;
-    qs('#drawer-stu-email').textContent = student.email;
-    qs('#drawer-stu-phone').textContent = student.phone || 'Not provided';
-    qs('#drawer-stu-major').textContent = student.major;
-    qs('#drawer-stu-gpa').textContent = student.gpa.toFixed(2);
-    qs('#drawer-stu-status').textContent = student.status;
-    qs('#drawer-stu-date').textContent = student.enrollDate || 'N/A';
+    if (qs('#drawer-stu-name')) qs('#drawer-stu-name').textContent = student.name;
+    if (qs('#drawer-stu-id')) qs('#drawer-stu-id').textContent = student.id;
+    if (qs('#drawer-stu-email')) qs('#drawer-stu-email').textContent = student.email;
+    if (qs('#drawer-stu-phone')) qs('#drawer-stu-phone').textContent = student.phone || 'Not provided';
+    if (qs('#drawer-stu-program') || qs('#drawer-stu-major')) {
+      const el = qs('#drawer-stu-program') || qs('#drawer-stu-major');
+      el.textContent = student.program || student.major || 'Software Engineering';
+    }
+    if (qs('#drawer-stu-semester')) qs('#drawer-stu-semester').textContent = `Semester ${student.semester || '1'}`;
+    if (qs('#drawer-stu-gpa')) qs('#drawer-stu-gpa').textContent = (student.gpa || 3.0).toFixed(2);
+    if (qs('#drawer-stu-status')) qs('#drawer-stu-status').textContent = student.status;
+    if (qs('#drawer-stu-date')) qs('#drawer-stu-date').textContent = student.enrollDate || 'N/A';
 
     if (drawer) drawer.classList.add('open');
     if (backdrop) backdrop.classList.add('open');
@@ -362,14 +507,15 @@ export class StudentController {
       return;
     }
 
-    const headers = ['Student ID', 'Full Name', 'Email', 'Phone', 'Major', 'GPA', 'Status', 'Enroll Date'];
+    const headers = ['Student ID', 'Full Name', 'Email', 'Phone', 'Program', 'Semester', 'GPA', 'Status', 'Enroll Date'];
     const rows = students.map(s => [
       `"${s.id}"`,
       `"${s.name.replace(/"/g, '""')}"`,
       `"${s.email}"`,
       `"${s.phone || ''}"`,
-      `"${s.major}"`,
-      s.gpa.toFixed(2),
+      `"${s.program || s.major}"`,
+      `"Semester ${s.semester || '1'}"`,
+      (s.gpa || 3.0).toFixed(2),
       `"${s.status}"`,
       `"${s.enrollDate || ''}"`
     ]);

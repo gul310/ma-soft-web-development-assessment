@@ -11,11 +11,17 @@ export class Router {
     this.currentRoute = null;
     this.routeAliases = {
       'q1': 'q1-dom',
+      'q1-dom': 'q1-dom',
       'q2': 'q2-form',
+      'q2-form': 'q2-form',
       'q3': 'q3-api',
+      'q3-api': 'q3-api',
       'q4': 'q4-crud',
+      'q4-crud': 'q4-crud',
       'q5': 'q5-security',
+      'q5-security': 'q5-security',
       'q6': 'q6-git',
+      'q6-git': 'q6-git',
       'overview': 'overview'
     };
     this.init();
