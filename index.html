@@ -786,43 +786,59 @@
               </div>
             </div>
             <p class="view-description">
-              Production-quality Student Information Management System implementing Add, View, Edit, Delete (with confirmation modal & undo support), multi-column search, major/status filters, multi-column sorting, and persistent localStorage data handling.
+              Production-quality Student Information Management System implementing Add, View, Edit, Delete (with confirmation dialog & undo support), live multi-field search, program/status/semester filters, sorting, and persistent localStorage data handling.
             </p>
           </div>
 
           <!-- Stats Strip -->
           <div class="q1-stats-strip mb-4">
-            <div>Enrolled Students: <span id="q4-stat-total" class="font-mono text-primary font-bold">0</span></div>
-            <div>Average GPA: <span id="q4-stat-gpa" class="font-mono text-success font-bold">0.00</span></div>
-            <div>Active Status: <span id="q4-stat-active" class="font-mono text-info font-bold">0</span></div>
+            <div>Total Students: <span id="q4-stat-total" class="font-mono text-primary font-bold">0</span></div>
+            <div>Active Enrolled: <span id="q4-stat-active" class="font-mono text-success font-bold">0</span></div>
+            <div>Average GPA: <span id="q4-stat-gpa" class="font-mono text-info font-bold">0.00</span></div>
           </div>
 
           <!-- Search & Filter Toolbar -->
           <div class="search-toolbar">
             <div class="search-input-group">
-              <input type="text" id="q4-search-input" class="form-input" placeholder="Search by name, student ID, email, major...">
+              <input type="text" id="q4-search-input" class="form-input" placeholder="Search by name, student ID, email, phone, program...">
             </div>
 
             <div class="flex gap-2 flex-wrap">
-              <select id="q4-filter-major" class="form-select" style="width: auto;">
-                <option value="all">All Majors</option>
-                <option value="Computer Science">Computer Science</option>
+              <select id="q4-filter-major" class="form-select" style="width: auto;" aria-label="Filter by Academic Program">
+                <option value="all">All Programs</option>
                 <option value="Software Engineering">Software Engineering</option>
-                <option value="Information Systems">Information Systems</option>
+                <option value="Computer Science">Computer Science</option>
                 <option value="Data Science">Data Science</option>
+                <option value="Information Systems">Information Systems</option>
+                <option value="Artificial Intelligence">Artificial Intelligence</option>
+                <option value="Cybersecurity">Cybersecurity</option>
               </select>
 
-              <select id="q4-filter-status" class="form-select" style="width: auto;">
+              <select id="q4-filter-semester" class="form-select" style="width: auto;" aria-label="Filter by Semester">
+                <option value="all">All Semesters</option>
+                <option value="1">Semester 1</option>
+                <option value="2">Semester 2</option>
+                <option value="3">Semester 3</option>
+                <option value="4">Semester 4</option>
+                <option value="5">Semester 5</option>
+                <option value="6">Semester 6</option>
+                <option value="7">Semester 7</option>
+                <option value="8">Semester 8</option>
+              </select>
+
+              <select id="q4-filter-status" class="form-select" style="width: auto;" aria-label="Filter by Status">
                 <option value="all">All Statuses</option>
                 <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
                 <option value="Probation">Probation</option>
               </select>
 
-              <select id="q4-sort-select" class="form-select" style="width: auto;">
+              <select id="q4-sort-select" class="form-select" style="width: auto;" aria-label="Sort Students">
                 <option value="name-asc">Sort: Name (A-Z)</option>
                 <option value="name-desc">Sort: Name (Z-A)</option>
+                <option value="id-asc">Sort: Student ID (Asc)</option>
                 <option value="gpa-desc">Sort: GPA (Highest)</option>
-                <option value="gpa-asc">Sort: GPA (Lowest)</option>
+                <option value="sem-asc">Sort: Semester (Asc)</option>
                 <option value="date-desc">Sort: Newest Enrolled</option>
               </select>
             </div>
@@ -835,10 +851,10 @@
                 <tr>
                   <th scope="col">Student / ID</th>
                   <th scope="col">Email</th>
-                  <th scope="col">Major</th>
-                  <th scope="col">GPA</th>
+                  <th scope="col">Phone</th>
+                  <th scope="col">Course / Program</th>
+                  <th scope="col">Semester</th>
                   <th scope="col">Status</th>
-                  <th scope="col">Enroll Date</th>
                   <th scope="col">Actions</th>
                 </tr>
               </thead>
@@ -853,65 +869,81 @@
             <div class="modal-dialog" id="q4-student-modal" role="dialog" aria-labelledby="q4-modal-title" aria-modal="true">
               <div class="modal-header">
                 <h3 id="q4-modal-title">Add Student Record</h3>
-                <button class="btn-icon btn-sm" id="q4-modal-close-btn" aria-label="Close Modal">✕</button>
+                <button type="button" class="btn-icon btn-sm" id="q4-modal-close-btn" aria-label="Close Modal">✕</button>
               </div>
               <form id="q4-student-form">
                 <div class="modal-body">
                   <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 1rem;">
                     <div class="form-group">
-                      <label class="form-label" for="stu-id">Student ID</label>
-                      <input type="text" id="stu-id" class="form-input font-mono" readonly>
+                      <label class="form-label" for="stu-id">Student ID <span class="required-star">*</span></label>
+                      <input type="text" id="stu-id" class="form-input font-mono" placeholder="e.g. STU-1001" required>
                     </div>
 
                     <div class="form-group">
                       <label class="form-label" for="stu-name">Full Name <span class="required-star">*</span></label>
-                      <input type="text" id="stu-name" class="form-input" placeholder="e.g. Johnathan Doe" required>
+                      <input type="text" id="stu-name" class="form-input" placeholder="e.g. Ayesha Khan" required>
                     </div>
                   </div>
 
                   <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 1rem;">
                     <div class="form-group">
                       <label class="form-label" for="stu-email">Email Address <span class="required-star">*</span></label>
-                      <input type="email" id="stu-email" class="form-input" placeholder="e.g. j.doe@university.edu" required>
+                      <input type="email" id="stu-email" class="form-input" placeholder="e.g. ayesha.khan@example.com" required>
                     </div>
 
                     <div class="form-group">
-                      <label class="form-label" for="stu-phone">Phone Number</label>
-                      <input type="tel" id="stu-phone" class="form-input" placeholder="e.g. +1 (555) 019-2831">
+                      <label class="form-label" for="stu-phone">Phone Number <span class="required-star">*</span></label>
+                      <input type="tel" id="stu-phone" class="form-input" placeholder="e.g. 03001234567" required>
                     </div>
                   </div>
 
                   <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 1rem;">
                     <div class="form-group">
-                      <label class="form-label" for="stu-major">Academic Major <span class="required-star">*</span></label>
+                      <label class="form-label" for="stu-major">Course / Program <span class="required-star">*</span></label>
                       <select id="stu-major" class="form-select" required>
-                        <option value="Computer Science">Computer Science</option>
                         <option value="Software Engineering">Software Engineering</option>
-                        <option value="Information Systems">Information Systems</option>
+                        <option value="Computer Science">Computer Science</option>
                         <option value="Data Science">Data Science</option>
+                        <option value="Information Systems">Information Systems</option>
+                        <option value="Artificial Intelligence">Artificial Intelligence</option>
                         <option value="Cybersecurity">Cybersecurity</option>
                       </select>
                     </div>
 
                     <div class="form-group">
-                      <label class="form-label" for="stu-gpa">GPA (0.00 - 4.00) <span class="required-star">*</span></label>
-                      <input type="number" id="stu-gpa" class="form-input" min="0" max="4.00" step="0.01" placeholder="3.75" required>
+                      <label class="form-label" for="stu-semester">Semester <span class="required-star">*</span></label>
+                      <select id="stu-semester" class="form-select" required>
+                        <option value="1">Semester 1</option>
+                        <option value="2">Semester 2</option>
+                        <option value="3">Semester 3</option>
+                        <option value="4">Semester 4</option>
+                        <option value="5">Semester 5</option>
+                        <option value="6">Semester 6</option>
+                        <option value="7">Semester 7</option>
+                        <option value="8">Semester 8</option>
+                      </select>
                     </div>
                   </div>
 
                   <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 1rem;">
                     <div class="form-group">
-                      <label class="form-label" for="stu-status">Enrollment Status</label>
-                      <select id="stu-status" class="form-select">
+                      <label class="form-label" for="stu-status">Enrollment Status <span class="required-star">*</span></label>
+                      <select id="stu-status" class="form-select" required>
                         <option value="Active">Active</option>
+                        <option value="Inactive">Inactive</option>
                         <option value="Probation">Probation</option>
                       </select>
                     </div>
 
                     <div class="form-group">
-                      <label class="form-label" for="stu-date">Enrollment Date</label>
-                      <input type="date" id="stu-date" class="form-input">
+                      <label class="form-label" for="stu-gpa">GPA (0.00 - 4.00)</label>
+                      <input type="number" id="stu-gpa" class="form-input" min="0" max="4.00" step="0.01" value="3.50">
                     </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label" for="stu-date">Enrollment Date</label>
+                    <input type="date" id="stu-date" class="form-input">
                   </div>
                 </div>
                 <div class="modal-footer">
@@ -945,7 +977,7 @@
           <div class="drawer" id="q4-detail-drawer" role="dialog" aria-labelledby="drawer-stu-name" aria-modal="true">
             <div class="drawer-header">
               <h3>Student Profile Details</h3>
-              <button class="btn-icon btn-sm" id="q4-detail-close-btn" aria-label="Close Profile">✕</button>
+              <button type="button" class="btn-icon btn-sm" id="q4-detail-close-btn" aria-label="Close Profile">✕</button>
             </div>
             <div class="drawer-body">
               <div class="card mb-4" style="background: var(--bg-tertiary);">
@@ -955,8 +987,13 @@
 
               <div class="flex-col gap-3">
                 <div class="flex justify-between border-b pb-2">
-                  <span class="text-muted text-sm">Academic Major</span>
-                  <strong id="drawer-stu-major" class="text-sm">Major</strong>
+                  <span class="text-muted text-sm">Course / Program</span>
+                  <strong id="drawer-stu-major" class="text-sm">Software Engineering</strong>
+                </div>
+
+                <div class="flex justify-between border-b pb-2">
+                  <span class="text-muted text-sm">Semester</span>
+                  <span id="drawer-stu-semester" class="badge badge-primary">Semester 1</span>
                 </div>
 
                 <div class="flex justify-between border-b pb-2">
@@ -976,14 +1013,75 @@
 
                 <div class="flex justify-between border-b pb-2">
                   <span class="text-muted text-sm">Contact Phone</span>
-                  <span id="drawer-stu-phone" class="text-sm">+1 (555) 000-0000</span>
+                  <span id="drawer-stu-phone" class="text-sm font-mono">03001234567</span>
                 </div>
 
                 <div class="flex justify-between border-b pb-2">
                   <span class="text-muted text-sm">Enrolled Date</span>
-                  <span id="drawer-stu-date" class="text-sm">2024-01-15</span>
+                  <span id="drawer-stu-date" class="text-sm font-mono">2024-01-15</span>
                 </div>
               </div>
+            </div>
+          </div>
+
+          <!-- Q4 Comprehensive Technical Architecture & Interview Explanation Panel -->
+          <div class="card mt-4">
+            <div class="card-header">
+              <h3 class="card-title">📖 Q4 Technical Architecture & CRUD Implementation Explanation</h3>
+            </div>
+            <div class="flex-col gap-3">
+              <h4>1. What CRUD Means</h4>
+              <p class="text-sm mb-3">
+                <strong>CRUD</strong> stands for <strong>Create, Read, Update, and Delete</strong> — the four foundational data persistence primitives required by any interactive software system. In this module, it governs the complete lifecycle of student records: registering new candidates (Create), viewing profiles and table rosters (Read), updating academic information (Update), and removing inactive records with confirmation safety (Delete).
+              </p>
+
+              <h4>2. How Add Works</h4>
+              <p class="text-sm mb-3">
+                Clicking "+ Add Student" initializes the form in creation mode, auto-generating a unique candidate ID while permitting manual ID input. Upon submission, all 7 mandatory fields (Student ID, Name, Email, Phone, Program, Semester, Status) undergo strict validation. Valid records are unshifted into the state array, serialized to persistent storage, and rendered dynamically via DOM batching without full-page reloads.
+              </p>
+
+              <h4>3. How View Works</h4>
+              <p class="text-sm mb-3">
+                Upon loading or navigating to <code>#/q4-crud</code>, <code>StudentModel</code> reads serialized JSON records from local storage. <code>StudentView</code> renders each row using <code>DocumentFragment</code> and updates global statistics counters. If the database or active filter produces 0 items, dedicated, accessible empty states ("No Students Found" / "No Matching Students Found") are presented.
+              </p>
+
+              <h4>4. How Edit Works</h4>
+              <p class="text-sm mb-3">
+                Clicking the Edit button (✎) fetches the exact student record by primary ID, populates the modal form, locks the Student ID field (to maintain relational integrity), and sets <code>this.currentEditingId</code>. Upon submission, the record is updated in place, re-persisted, and the table updates immediately without creating duplicates. Clicking "Cancel" restores the form to Add mode without modifying data.
+              </p>
+
+              <h4>5. How Delete Works</h4>
+              <p class="text-sm mb-3">
+                Clicking Delete (🗑) opens an accessible modal confirmation dialog asking <em>"Are you sure you want to delete student...?"</em>. If confirmed, the student is removed from the array, pushed to an undo history stack, and saved to storage. An accessible toast appears with an interactive <strong>"Undo"</strong> action button that instantly restores the record if clicked.
+              </p>
+
+              <h4>6. How Search Operates</h4>
+              <p class="text-sm mb-3">
+                Search queries are evaluated in real-time across multiple fields (Student ID, Full Name, Email, Phone, Academic Program, and Semester) using case-insensitive substring matching (<code>includes()</code>) and whitespace normalization. Keystrokes are debounced (250ms) to ensure smooth performance.
+              </p>
+
+              <h4>7. How Data Persistence Operates</h4>
+              <p class="text-sm mb-3">
+                To maintain a clean static Vanilla JavaScript architecture without introducing unnecessary server overhead (e.g. Python/PHP), data is persisted using the browser's <code>localStorage</code> API through a decoupled <code>StorageService</code>. Data is serialized safely as JSON, and corrupted or missing storage states are caught gracefully with automatic fallback to seed data.
+              </p>
+
+              <h4>8. How Multi-Tier Validation Protects Data</h4>
+              <p class="text-sm mb-3">
+                Data integrity is enforced at both input and model levels. <code>ValidationRules</code> enforces Student ID format and uniqueness, regex-based name validation (rejecting numbers/symbols), standard email patterns, Pakistani phone formatting (<code>03XXXXXXXXX</code>, <code>+923XXXXXXXXX</code>), semester ranges (1–8), and status enumerations. Invalid submissions highlight the offending control with <code>aria-invalid="true"</code> and trigger contextual toast alerts.
+              </p>
+
+              <h4>9. How Cross-Site Scripting (XSS) Is Prevented</h4>
+              <p class="text-sm mb-3">
+                Student data is rendered strictly via <code>document.createElement()</code> and assigned via <code>element.textContent</code>. The application completely avoids passing raw student inputs to <code>innerHTML</code>. Any script tags or HTML tags (e.g. <code>&lt;script&gt;alert('xss')&lt;/script&gt;</code>) are treated strictly as string literals, rendering them harmless.
+              </p>
+
+              <h4>10. How Code Is Structured (MVC Pattern)</h4>
+              <p class="text-sm mb-3">
+                The module is organized according to the <strong>Model-View-Controller (MVC)</strong> architectural pattern:
+                <br>&bull; <strong>Model (<code>studentModel.js</code>)</strong>: Manages business logic, storage persistence, unique ID enforcement, and undo stacks.
+                <br>&bull; <strong>View (<code>studentView.js</code>)</strong>: Manages pure DOM rendering, fragments, empty states, and accessibility attributes.
+                <br>&bull; <strong>Controller (<code>studentController.js</code>)</strong>: Manages event listeners, form orchestration, search/sort filters, and modal lifecycle.
+              </p>
             </div>
           </div>
         </section>

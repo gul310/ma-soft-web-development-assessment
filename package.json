@@ -7,6 +7,6 @@
     "start": "npx -y serve . -l 8080",
     "dev": "npx -y serve . -l 8080",
     "serve": "npx -y serve . -l 8080",
-    "test": "node scratch/test_navigation_e2e.js && node scratch/audit_q1_q3.js"
+    "test": "node scratch/test_navigation_e2e.js && node scratch/audit_q1_q3.js && node scratch/test_q4_crud.js"
   }
 }
