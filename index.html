@@ -476,14 +476,14 @@
               </div>
             </div>
             <p class="view-description">
-              Robust client-side registration form enforcing strict RFC email format, phone masking, entropy-based password validation (8+ chars, uppercase, lowercase, number, special character), real-time password matching, and accessible error callouts.
+              Production-grade registration suite with real-time field validation, RFC-compliant email checking, Pakistani phone format support (local <code class="font-mono text-xs">03XXXXXXXXX</code> and international <code class="font-mono text-xs">+923XXXXXXXXX</code>), 5-point entropy password strength engine with visibility toggle, and instant confirmation matching.
             </p>
           </div>
 
           <div class="registration-container">
             <div class="card">
               <div class="card-header">
-                <h3 class="card-title">Create Developer Account</h3>
+                <h3 class="card-title">Registration Form</h3>
                 <span class="text-xs text-muted">All fields are mandatory</span>
               </div>
 
@@ -494,7 +494,7 @@
                     <span>Full Name</span>
                     <span class="required-star">*</span>
                   </label>
-                  <input type="text" id="reg-name" class="form-input" placeholder="e.g. Alexander Pierce" autocomplete="name" required>
+                  <input type="text" id="reg-name" class="form-input" placeholder="e.g. Muhammad Ali" autocomplete="name" aria-describedby="error-name" required>
                   <div class="form-error-msg" id="error-name" role="alert"></div>
                 </div>
 
@@ -504,7 +504,7 @@
                     <span>Email Address</span>
                     <span class="required-star">*</span>
                   </label>
-                  <input type="email" id="reg-email" class="form-input" placeholder="e.g. alexander.p@company.com" autocomplete="email" required>
+                  <input type="email" id="reg-email" class="form-input" placeholder="e.g. candidate@domain.com" autocomplete="email" aria-describedby="error-email" required>
                   <div class="form-error-msg" id="error-email" role="alert"></div>
                 </div>
 
@@ -514,8 +514,8 @@
                     <span>Phone Number</span>
                     <span class="required-star">*</span>
                   </label>
-                  <input type="tel" id="reg-phone" class="form-input" placeholder="e.g. (555) 234-5678" autocomplete="tel" required>
-                  <span class="form-helper">Formats automatically as you type. Minimum 10 digits required.</span>
+                  <input type="tel" id="reg-phone" class="form-input font-mono" placeholder="03001234567 or +923001234567" autocomplete="tel" aria-describedby="phone-helper error-phone" required>
+                  <span class="form-helper" id="phone-helper">Supports Pakistani local (03XXXXXXXXX) and international (+923XXXXXXXXX) formats.</span>
                   <div class="form-error-msg" id="error-phone" role="alert"></div>
                 </div>
 
@@ -526,18 +526,18 @@
                       <span>Password</span>
                       <span class="required-star">*</span>
                     </label>
-                    <button type="button" class="btn-icon btn-sm" id="toggle-password-visibility" aria-label="Toggle Password Visibility" title="Show/Hide Password">👁</button>
+                    <button type="button" class="btn-icon btn-sm" id="toggle-password-visibility" aria-label="Toggle password visibility between text and password mode" title="Show/Hide Password">👁</button>
                   </div>
-                  <input type="password" id="reg-password" class="form-input" placeholder="Enter secure password" autocomplete="new-password" required>
+                  <input type="password" id="reg-password" class="form-input font-mono" placeholder="Enter secure password" autocomplete="new-password" aria-describedby="error-password" required>
                   
                   <!-- Dynamic Strength Indicator -->
-                  <div class="password-strength-container">
+                  <div class="password-strength-container" aria-live="polite">
                     <div class="password-strength-bar">
                       <div id="password-strength-fill" style="width: 0%; height: 100%; transition: width 0.3s, background-color 0.3s;"></div>
                     </div>
                     <div class="strength-text">
                       <span id="password-strength-label">Strength: Required</span>
-                      <span class="text-xs text-muted">Policy: 5/5 Criteria</span>
+                      <span class="text-xs text-muted">Policy: 5/5 Requirements</span>
                     </div>
                   </div>
 
@@ -559,28 +559,28 @@
                     <span>Confirm Password</span>
                     <span class="required-star">*</span>
                   </label>
-                  <input type="password" id="reg-confirm-password" class="form-input" placeholder="Re-type password exactly" autocomplete="new-password" required>
+                  <input type="password" id="reg-confirm-password" class="form-input font-mono" placeholder="Re-type password exactly" autocomplete="new-password" aria-describedby="error-confirmPassword" required>
                   <div class="form-error-msg" id="error-confirmPassword" role="alert"></div>
                 </div>
 
                 <!-- Form Action Buttons -->
                 <div class="flex items-center justify-between gap-3 mt-4">
                   <button type="button" class="btn btn-secondary" id="q2-reset-form-btn">Reset Form</button>
-                  <button type="submit" class="btn btn-primary" id="q2-submit-btn">Create Account</button>
+                  <button type="submit" class="btn btn-primary" id="q2-submit-btn">Validate & Submit</button>
                 </div>
               </form>
             </div>
 
             <!-- Success Card & Payload Summary -->
-            <div class="card mt-4" id="q2-success-card" style="display: none; border-color: var(--color-success);">
+            <div class="card mt-4" id="q2-success-card" style="display: none; border-color: var(--color-success);" aria-live="polite">
               <div class="card-header">
-                <h3 class="card-title text-success">✓ Registration Validated Successfully</h3>
-                <span class="badge badge-success">200 OK</span>
+                <h3 class="card-title text-success">✓ Frontend Validation Passed</h3>
+                <span class="badge badge-success">Client Validated</span>
               </div>
               <p class="text-sm text-secondary mb-3">
-                All validation checks passed with zero errors. Password hash protected, inputs sanitized, and submission payload prepared for transmission.
+                All 5 fields passed client-side validation successfully. Passwords are hash-masked and credentials are never logged or stored unsafely.
               </p>
-              <pre class="code-box text-xs" id="q2-payload-summary"></pre>
+              <pre class="code-box text-xs font-mono" id="q2-payload-summary"></pre>
             </div>
           </div>
         </section>
