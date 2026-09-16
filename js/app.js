@@ -154,12 +154,36 @@ class Application {
   }
 
   setupSidebarNavigation() {
+    // Event delegation on sidebar for ultra-reliable click capturing
+    const sidebar = qs('.app-sidebar');
+    if (sidebar) {
+      sidebar.addEventListener('click', (e) => {
+        const btn = e.target.closest('.nav-item-btn');
+        if (btn) {
+          const route = btn.dataset.route;
+          if (route) {
+            this.router.navigate(route);
+          }
+        }
+      });
+    }
+
+    // Direct binding fallback
     const navButtons = qsa('.nav-item-btn');
     navButtons.forEach(btn => {
       btn.addEventListener('click', () => {
         const route = btn.dataset.route;
         if (route) {
           this.router.navigate(route);
+        }
+      });
+      btn.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          const route = btn.dataset.route;
+          if (route) {
+            this.router.navigate(route);
+          }
         }
       });
     });
@@ -174,12 +198,26 @@ class Application {
           this.router.navigate(targetRoute);
         }
       });
+      card.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          const targetRoute = card.dataset.targetRoute;
+          if (targetRoute) {
+            this.router.navigate(targetRoute);
+          }
+        }
+      });
     });
   }
 }
 
-// Bootstrap on DOM Ready
+// Bootstrap on DOM Ready or immediately if DOM is already interactive
 const app = new Application();
-document.addEventListener('DOMContentLoaded', () => {
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => {
+    app.init();
+  });
+} else {
   app.init();
-});
+}
+
