@@ -1098,55 +1098,133 @@
               </div>
             </div>
             <p class="view-description">
-              Live proof demonstrations of 6 core frontend security and performance optimizations: XSS defense sandbox, DOM batching benchmark, input sanitization, event delegation, and network request reductions.
+              Interactive laboratory demonstrating 6 core web security defenses (Secure Input, XSS Neutralization, Multi-Tier Validation, Safe API Consumption, Safe External Links, Secure Storage) and 5 performance optimizations (DOM Batching, Debounced Execution, Network Request Caching, Resource Optimization, Non-blocking JS).
             </p>
           </div>
 
-          <!-- Interactive Test Sandboxes -->
+          <!-- Live Performance Metrics Strip -->
+          <div class="q1-stats-strip mb-4">
+            <div>DOMContentLoaded: <span id="q5-metric-dcl" class="font-mono text-primary font-bold">-- ms</span></div>
+            <div>Page Load: <span id="q5-metric-load" class="font-mono text-success font-bold">-- ms</span></div>
+            <div>Total Resources: <span id="q5-metric-resources" class="font-mono text-info font-bold">--</span></div>
+            <div>Active JS Modules: <span id="q5-metric-js-count" class="font-mono text-warning font-bold">--</span></div>
+          </div>
+
+          <!-- Interactive Test Sandboxes Grid -->
           <div class="security-demo-grid">
             
-            <!-- Sandbox 1: XSS Defense Laboratory -->
+            <!-- Sandbox 1: Secure User-Input & Validation Demo Form -->
             <div class="card">
               <div class="card-header">
-                <h3 class="card-title">🛡️ Live XSS Attack Defense Sandbox</h3>
+                <h3 class="card-title">🛡️ Security Practice #1 & #3: Secure Input & Form Validation</h3>
+                <span class="badge badge-success">Active Validation</span>
+              </div>
+              <p class="text-xs text-secondary mb-3">
+                Live interactive demonstration form with client-side trimming, length boundary enforcement, character sanitization, and safe DOM log appending.
+              </p>
+
+              <form id="q5-secure-form" novalidate>
+                <div class="form-group mb-2">
+                  <label class="form-label text-xs" for="q5-demo-name">Display Name <span class="required-star">*</span></label>
+                  <input type="text" id="q5-demo-name" class="form-input text-xs" placeholder="e.g. Security Candidate" aria-describedby="q5-name-error" required>
+                  <span id="q5-name-error" class="form-error-msg" role="alert"></span>
+                </div>
+
+                <div class="form-group mb-2">
+                  <label class="form-label text-xs" for="q5-demo-message">Comment / Message (Min 5 chars) <span class="required-star">*</span></label>
+                  <textarea id="q5-demo-message" class="form-input text-xs" rows="2" placeholder="e.g. Testing input sanitization and length bounds." aria-describedby="q5-message-error" required></textarea>
+                  <span id="q5-message-error" class="form-error-msg" role="alert"></span>
+                </div>
+
+                <div class="flex justify-between items-center mt-3">
+                  <span class="text-xs text-muted font-mono">Protected by ValidationRules</span>
+                  <button type="submit" class="btn btn-primary btn-sm" id="q5-submit-demo-btn">Submit Secure Message</button>
+                </div>
+              </form>
+
+              <div class="mt-3">
+                <span class="text-xs text-muted font-bold block mb-1">Safe Submission Log (Rendered via textContent):</span>
+                <div id="q5-form-log" style="max-height: 140px; overflow-y: auto;">
+                  <div class="empty-log-placeholder text-xs text-muted p-2 bg-secondary rounded text-center">No messages submitted yet. Submit a message above.</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Sandbox 2: XSS Defense Laboratory -->
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">⚔️ Security Practice #2: Live XSS Defense Sandbox</h3>
                 <span class="badge badge-success">XSS Protected</span>
               </div>
               <p class="text-xs text-secondary mb-3">
-                Test how user inputs are safely rendered using <code class="font-mono">textContent</code> and escaping filters, neutralizing malicious JavaScript injection attempts.
+                Inject arbitrary attack vectors below to verify that user input is never executed as HTML/JavaScript.
               </p>
 
-              <div class="form-group">
-                <label class="form-label" for="q5-payload-preset">Load Test Attack Payload</label>
-                <select id="q5-payload-preset" class="form-select">
+              <div class="form-group mb-2">
+                <label class="form-label text-xs" for="q5-payload-preset">Load Test Attack Payload</label>
+                <select id="q5-payload-preset" class="form-select text-xs">
                   <option value="&lt;img src=x onerror=alert('XSS_Executed')&gt;">&lt;img src=x onerror=alert('XSS')&gt;</option>
                   <option value="&lt;script&gt;document.cookie='hacked'&lt;/script&gt;">&lt;script&gt;document.cookie='hacked'&lt;/script&gt;</option>
                   <option value="javascript:alert(document.domain)">javascript:alert(document.domain)</option>
+                  <option value="&quot;&gt;&lt;script&gt;alert(1)&lt;/script&gt;">"&gt;&lt;script&gt;alert(1)&lt;/script&gt;</option>
                   <option value="&lt;svg onload=alert(1)&gt;">&lt;svg onload=alert(1)&gt;</option>
                 </select>
               </div>
 
-              <div class="form-group">
-                <label class="form-label" for="q5-xss-input">Custom Input String</label>
+              <div class="form-group mb-2">
+                <label class="form-label text-xs" for="q5-xss-input">Custom Payload String</label>
                 <input type="text" id="q5-xss-input" class="form-input font-mono text-xs" value="<img src=x onerror=alert('XSS_Executed')>">
               </div>
 
               <div class="benchmark-box mt-2">
-                <span class="text-xs text-muted font-bold block mb-1">Safe DOM Rendering Output:</span>
-                <div id="q5-xss-safe-output" class="p-2 bg-secondary rounded text-xs font-mono"></div>
+                <span class="text-xs text-muted font-bold block mb-1">Live DOM Rendering Output:</span>
+                <div id="q5-xss-safe-output"></div>
               </div>
             </div>
 
-            <!-- Sandbox 2: DOM Reflow Benchmark Tool -->
+            <!-- Sandbox 3: Debounce & Rate Limiting Monitor -->
             <div class="card">
               <div class="card-header">
-                <h3 class="card-title">⚡ DOM Reflow & Batching Benchmark</h3>
-                <span class="badge badge-primary">Performance Lab</span>
+                <h3 class="card-title">⏱️ Performance Practice #2: Keystroke Debounce Monitor</h3>
+                <span class="badge badge-info">300ms Delay</span>
               </div>
               <p class="text-xs text-secondary mb-3">
-                Compares naive iterative DOM insertion (1,000 reflows) against <code class="font-mono">DocumentFragment</code> batch mutation (1 single reflow).
+                Type rapidly to observe how debouncing coalesces high-frequency keystrokes into a single execution.
               </p>
 
-              <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+              <div class="form-group mb-2">
+                <label class="form-label text-xs" for="q5-debounce-input">Type Rapidly Here</label>
+                <input type="text" id="q5-debounce-input" class="form-input text-xs" placeholder="Type fast to test rate limiting...">
+              </div>
+
+              <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-top: 0.75rem;">
+                <div class="benchmark-box text-center">
+                  <div class="text-xs text-muted">Raw Keystrokes</div>
+                  <div class="benchmark-metric text-warning" id="q5-raw-keystroke-count">0</div>
+                </div>
+
+                <div class="benchmark-box text-center">
+                  <div class="text-xs text-muted">Debounced Calls</div>
+                  <div class="benchmark-metric text-success" id="q5-debounced-exec-count">0</div>
+                </div>
+              </div>
+
+              <div class="mt-2 text-xs font-mono text-muted" id="q5-debounce-output">
+                Waiting for input...
+              </div>
+            </div>
+
+            <!-- Sandbox 4: DOM Reflow Benchmark Tool -->
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">⚡ Performance Practice #1: DOM Reflow Benchmark</h3>
+                <span class="badge badge-primary">Batching Lab</span>
+              </div>
+              <p class="text-xs text-secondary mb-3">
+                Compares naive iterative DOM insertion (1,000 reflows) against <code>DocumentFragment</code> batch insertion (1 reflow).
+              </p>
+
+              <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 0.75rem;">
                 <div class="benchmark-box text-center">
                   <div class="text-xs text-muted">Iterative Append</div>
                   <div class="benchmark-metric text-warning" id="q5-naive-time">-- ms</div>
@@ -1161,77 +1239,208 @@
               </div>
 
               <div class="flex items-center justify-between">
-                <span class="badge badge-success text-sm" id="q5-improvement-pct">Benchmark Ready</span>
-                <button class="btn btn-primary btn-sm" id="q5-run-benchmark-btn">Run 1,000 Node Benchmark</button>
+                <span class="badge badge-success text-xs" id="q5-improvement-pct">Benchmark Ready</span>
+                <button type="button" class="btn btn-primary btn-sm" id="q5-run-benchmark-btn">Run 1,000 Node Benchmark</button>
               </div>
               <div id="q5-benchmark-sandbox" style="display: none;"></div>
             </div>
 
           </div>
 
-          <!-- 6 Detailed Best Practice Deep Dives -->
-          <h3 class="mb-3">Comprehensive Technical Justifications (6 Best Practices)</h3>
-          
-          <div class="practice-breakdown-card">
-            <div class="practice-title">
-              <span class="badge badge-primary">Practice 1</span>
-              <span>Secure User-Input Handling & Sanitization</span>
+          <!-- Best Practices Status & Implementation Matrix -->
+          <div class="card mt-4">
+            <div class="card-header">
+              <h3 class="card-title">📊 Security & Performance Best Practices Implementation Matrix</h3>
             </div>
-            <p class="text-sm text-secondary">
-              <strong>Why it matters:</strong> User input is inherently untrusted. Malicious inputs can lead to HTML injection, SQL/NoSQL injection (if forwarded), or layout distortion. In this project, all inputs undergo automatic whitespace normalization (via <code>cleanInputString()</code>), URL protocol verification (stripping <code>javascript:</code> and <code>data:</code> protocols), and schema validation before any state updates.
-            </p>
+            <div class="table-responsive">
+              <table class="data-table" aria-label="Best Practices Matrix">
+                <thead>
+                  <tr>
+                    <th scope="col">Category</th>
+                    <th scope="col">Best Practice</th>
+                    <th scope="col">Implementation Mechanism</th>
+                    <th scope="col">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><span class="badge badge-primary">Security</span></td>
+                    <td><strong>Secure User Input</strong></td>
+                    <td>Whitespace normalization via <code>cleanInputString()</code>, length bounds, protocol stripping</td>
+                    <td><span class="badge badge-success">✓ Implemented</span></td>
+                  </tr>
+                  <tr>
+                    <td><span class="badge badge-primary">Security</span></td>
+                    <td><strong>Strict XSS Prevention</strong></td>
+                    <td>Exclusive use of <code>textContent</code> & <code>createElement()</code>; 0 raw HTML interpolation</td>
+                    <td><span class="badge badge-success">✓ Implemented</span></td>
+                  </tr>
+                  <tr>
+                    <td><span class="badge badge-primary">Security</span></td>
+                    <td><strong>Multi-Tier Validation</strong></td>
+                    <td><code>ValidationRules</code> engine (RFC 5322 Email regex, Pakistani phone formats, password entropy)</td>
+                    <td><span class="badge badge-success">✓ Implemented</span></td>
+                  </tr>
+                  <tr>
+                    <td><span class="badge badge-primary">Security</span></td>
+                    <td><strong>Safe API Data Consumption</strong></td>
+                    <td>Defensive JSON schema normalization, missing field fallbacks, HTTP status checking</td>
+                    <td><span class="badge badge-success">✓ Implemented</span></td>
+                  </tr>
+                  <tr>
+                    <td><span class="badge badge-primary">Security</span></td>
+                    <td><strong>Safe External Links & Storage</strong></td>
+                    <td><code>rel="noopener noreferrer"</code> on external links; 0 passwords/secrets in <code>localStorage</code></td>
+                    <td><span class="badge badge-success">✓ Implemented</span></td>
+                  </tr>
+                  <tr>
+                    <td><span class="badge badge-info">Performance</span></td>
+                    <td><strong>DOM Batching & Fragments</strong></td>
+                    <td>Off-screen <code>DocumentFragment</code> mutation eliminates layout thrashing & reflows</td>
+                    <td><span class="badge badge-success">✓ Implemented</span></td>
+                  </tr>
+                  <tr>
+                    <td><span class="badge badge-info">Performance</span></td>
+                    <td><strong>Debounced Execution</strong></td>
+                    <td>300ms timer coalesces rapid keystrokes into single operational triggers in search bars</td>
+                    <td><span class="badge badge-success">✓ Implemented</span></td>
+                  </tr>
+                  <tr>
+                    <td><span class="badge badge-info">Performance</span></td>
+                    <td><strong>Reduced Network Requests</strong></td>
+                    <td>In-memory client caching and <code>AbortController</code> to cancel obsolete in-flight requests</td>
+                    <td><span class="badge badge-success">✓ Implemented</span></td>
+                  </tr>
+                  <tr>
+                    <td><span class="badge badge-info">Performance</span></td>
+                    <td><strong>Resource Optimization</strong></td>
+                    <td>Font preconnects, inline SVGs, zero bulky external bundles, CSS containment</td>
+                    <td><span class="badge badge-success">✓ Implemented</span></td>
+                  </tr>
+                  <tr>
+                    <td><span class="badge badge-info">Performance</span></td>
+                    <td><strong>Non-blocking Modular JS</strong></td>
+                    <td>Native ES6 module imports (<code>&lt;script type="module"&gt;</code>) loaded asynchronously by browser</td>
+                    <td><span class="badge badge-success">✓ Implemented</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
 
-          <div class="practice-breakdown-card">
-            <div class="practice-title">
-              <span class="badge badge-primary">Practice 2</span>
-              <span>Strict Cross-Site Scripting (XSS) Prevention</span>
+          <!-- Comprehensive Technical Justifications (Interview Format) -->
+          <div class="card mt-4">
+            <div class="card-header">
+              <h3 class="card-title">📖 Comprehensive Technical Justifications & Interview Explanations</h3>
             </div>
-            <p class="text-sm text-secondary">
-              <strong>Why it matters:</strong> Using <code>innerHTML</code> to render user-generated content allows attackers to inject malicious <code>&lt;script&gt;</code> or event-handler tags (e.g. <code>&lt;img onerror&gt;</code>) to hijack session tokens or deface pages. This application strictly utilizes <code>document.createElement()</code> and <code>element.textContent</code> for all dynamic rendering, neutralizing HTML characters inherently.
-            </p>
-          </div>
+            <div class="flex-col gap-3">
+              
+              <div class="practice-breakdown-card">
+                <div class="practice-title">
+                  <span class="badge badge-primary">Practice 1</span>
+                  <span>Secure User-Input Handling & Sanitization</span>
+                </div>
+                <p class="text-sm text-secondary">
+                  <strong>1. Risk / Problem:</strong> User input is inherently untrusted. Malicious inputs can lead to HTML injection, script execution, or layout distortion.<br>
+                  <strong>2. Implementation:</strong> In <code>js/utils/sanitizers.js</code>, all incoming strings undergo automated whitespace trimming, dangerous protocol removal (stripping <code>javascript:</code> and <code>data:</code>), and schema boundary checks.<br>
+                  <strong>3. Why it improves security:</strong> Neutralizes attack vectors before state updates or storage persistence occur.<br>
+                  <strong>4. How tested:</strong> Automated test suite asserts whitespace normalization, protocol stripping, and length boundary enforcement.
+                </p>
+              </div>
 
-          <div class="practice-breakdown-card">
-            <div class="practice-title">
-              <span class="badge badge-primary">Practice 3</span>
-              <span>Multi-Tier Client-Side Form Validation</span>
+              <div class="practice-breakdown-card">
+                <div class="practice-title">
+                  <span class="badge badge-primary">Practice 2</span>
+                  <span>Strict Cross-Site Scripting (XSS) Prevention</span>
+                </div>
+                <p class="text-sm text-secondary">
+                  <strong>1. Risk / Problem:</strong> Using <code>innerHTML</code> to render user-controlled data allows attackers to inject malicious <code>&lt;script&gt;</code> or event-handler tags (e.g. <code>&lt;img onerror&gt;</code>) to hijack session tokens or deface applications.<br>
+                  <strong>2. Implementation:</strong> This application strictly utilizes <code>document.createElement()</code> and <code>element.textContent</code> for all dynamic rendering across Q1, Q2, Q3, Q4, and Q5.<br>
+                  <strong>3. Why it improves security:</strong> <code>textContent</code> treats HTML tags purely as string literals, making them completely inert and unexecutable by the browser's DOM parser.<br>
+                  <strong>4. How tested:</strong> Verified via live sandbox and automated test cases injecting <code>&lt;script&gt;alert('XSS')&lt;/script&gt;</code> and <code>&lt;img src=x onerror=alert(1)&gt;</code>.
+                </p>
+              </div>
+
+              <div class="practice-breakdown-card">
+                <div class="practice-title">
+                  <span class="badge badge-primary">Practice 3</span>
+                  <span>Multi-Tier Client-Side Form Validation</span>
+                </div>
+                <p class="text-sm text-secondary">
+                  <strong>1. Risk / Problem:</strong> Inadequate validation causes corrupt data states, broken UI components, and crashes downstream consumers.<br>
+                  <strong>2. Implementation:</strong> Implemented <code>ValidationRules</code> engine in <code>js/utils/validators.js</code> covering RFC 5322 Email regex, Pakistani phone formats, password entropy evaluation, required fields, and unique primary key constraints.<br>
+                  <strong>3. Why it improves security & UX:</strong> Catches faulty inputs immediately, marks inputs with <code>aria-invalid="true"</code>, autofocuses invalid fields, and prevents bad records from being saved.<br>
+                  <strong>4. How tested:</strong> 23 unit tests in Q2 and 57 unit tests in Q4 verify every validation edge case.
+                </p>
+              </div>
+
+              <div class="practice-breakdown-card">
+                <div class="practice-title">
+                  <span class="badge badge-primary">Practice 4</span>
+                  <span>Safe Public REST API Consumption & Error Boundaries</span>
+                </div>
+                <p class="text-sm text-secondary">
+                  <strong>1. Risk / Problem:</strong> External API payloads may contain malformed schemas, missing fields, or server errors that cause unhandled promise rejections and white-screen crashes.<br>
+                  <strong>2. Implementation:</strong> In Q3 <code>apiService.js</code>, HTTP responses are checked via <code>response.ok</code>, schema fields are normalized with fallback values, network disconnects are caught with retry actions, and active requests are cancelable via <code>AbortController</code>.<br>
+                  <strong>3. Why it improves security & resilience:</strong> Eliminates race conditions, isolates failure modes, and renders API text nodes securely without trusting external HTML.<br>
+                  <strong>4. How tested:</strong> Verified across 10 live user records, simulated 404/500/timeout responses, and network offline modes in <code>scratch/audit_q1_q3.js</code>.
+                </p>
+              </div>
+
+              <div class="practice-breakdown-card">
+                <div class="practice-title">
+                  <span class="badge badge-primary">Practice 5</span>
+                  <span>Optimized DOM Manipulation via DocumentFragment & Event Delegation</span>
+                </div>
+                <p class="text-sm text-secondary">
+                  <strong>1. Risk / Problem:</strong> Iterative DOM appends trigger continuous synchronous reflow and repaint cycles (layout thrashing), causing dropped frames and laggy UI.<br>
+                  <strong>2. Implementation:</strong> All list operations (Q1 items, Q3 cards, Q4 student rows) build nodes inside an off-screen <code>DocumentFragment</code> and commit in a single atomic append. Global event delegation handles child button actions with 0 listener leaks.<br>
+                  <strong>3. Why it improves performance:</strong> Reduces browser layout calculations from <em>N</em> reflows down to 1 reflow.<br>
+                  <strong>4. How tested:</strong> Interactive benchmark tool renders 1,000 nodes comparing naive append vs <code>DocumentFragment</code>, demonstrating measurable execution time savings.
+                </p>
+              </div>
+
+              <div class="practice-breakdown-card">
+                <div class="practice-title">
+                  <span class="badge badge-primary">Practice 6</span>
+                  <span>Network Request Reduction, Debouncing & In-Memory Caching</span>
+                </div>
+                <p class="text-sm text-secondary">
+                  <strong>1. Risk / Problem:</strong> Uncontrolled search inputs trigger an HTTP request or heavy filter operation on every single keystroke, overloading servers and generating UI lag.<br>
+                  <strong>2. Implementation:</strong> Implemented a reusable 300ms <code>debounce()</code> utility in <code>js/utils/debounce.js</code> used across search inputs in Q1, Q3, Q4, and Q5. Q3 caches fetched API responses in memory.<br>
+                  <strong>3. Why it improves performance:</strong> Drastically reduces network traffic, avoids duplicate data requests, and ensures smooth 60fps typing experiences.<br>
+                  <strong>4. How tested:</strong> Debounce tester logs raw keystrokes vs debounced executions; automated tests verify delayed execution behavior.
+                </p>
+              </div>
+
+              <div class="practice-breakdown-card">
+                <div class="practice-title">
+                  <span class="badge badge-primary">Practice 7</span>
+                  <span>Resource Optimization & Non-blocking Modular JavaScript</span>
+                </div>
+                <p class="text-sm text-secondary">
+                  <strong>1. Risk / Problem:</strong> Bloated dependencies, unoptimized images, and synchronous script tags block HTML parsing, degrading First Contentful Paint (FCP) and Largest Contentful Paint (LCP).<br>
+                  <strong>2. Implementation:</strong> The project uses 0 external heavyweight frameworks, uses Google Font preconnects (<code>preconnect</code>), inline SVG icons, and native ES6 modules (<code>&lt;script type="module"&gt;</code>) that execute deferred by default without blocking the initial DOM parse.<br>
+                  <strong>3. Why it improves performance:</strong> Minimizes critical path latency and ensures instantaneous page rendering.<br>
+                  <strong>4. How tested:</strong> Performance Timing reader logs DOMContentLoaded and resource count directly from the browser's Navigation Timing API.
+                </p>
+              </div>
+
+              <div class="practice-breakdown-card">
+                <div class="practice-title">
+                  <span class="badge badge-primary">Practice 8</span>
+                  <span>Secure Storage Policy (No Credentials in LocalStorage)</span>
+                </div>
+                <p class="text-sm text-secondary">
+                  <strong>1. Risk / Problem:</strong> Storing passwords, authentication tokens, or private secrets in browser <code>localStorage</code> leaves them vulnerable to theft via any XSS script vulnerability.<br>
+                  <strong>2. Implementation:</strong> <code>localStorage</code> is used strictly for non-sensitive UI preferences (theme) and sample candidate data (Q1 items, Q4 student records). Passwords, tokens, and credentials are NEVER persisted to <code>localStorage</code>.<br>
+                  <strong>3. Why it improves security:</strong> Adheres to OWASP frontend security guidelines regarding client-side storage boundaries.<br>
+                  <strong>4. How tested:</strong> Automated storage audit verifies that keys stored in <code>localStorage</code> contain 0 credentials, passwords, or secret tokens.
+                </p>
+              </div>
+
             </div>
-            <p class="text-sm text-secondary">
-              <strong>Why it matters:</strong> Comprehensive validation prevents bad data from reaching application stores or backend servers, reducing load and improving UX. We implement real-time keystroke hints, blur-event validation, RFC 5322 email regex, international phone formatting, entropy password evaluation, and safe submit button locking.
-            </p>
           </div>
-
-          <div class="practice-breakdown-card">
-            <div class="practice-title">
-              <span class="badge badge-primary">Practice 4</span>
-              <span>Optimized DOM Operations & Event Delegation</span>
-            </div>
-            <p class="text-sm text-secondary">
-              <strong>Why it matters:</strong> Attaching hundreds of event listeners consumes memory and causes listener leaks when elements are removed. Through <strong>Event Delegation</strong>, a single listener on parent lists (Q1, Q3, Q4) handles all child actions via <code>event.target.closest()</code>. Furthermore, all list updates build an off-screen <code>DocumentFragment</code> before committing to the DOM in a single atomic reflow.
-            </p>
-          </div>
-
-          <div class="practice-breakdown-card">
-            <div class="practice-title">
-              <span class="badge badge-primary">Practice 5</span>
-              <span>Resource & Asset Optimization</span>
-            </div>
-            <p class="text-sm text-secondary">
-              <strong>Why it matters:</strong> Heavy external assets cause high Largest Contentful Paint (LCP) and Cumulative Layout Shift (CLS). We use inline SVG icons and native system font stacks with clean Google Font fallbacks, CSS variables for instantaneous zero-re-render dark/light theming, and CSS containment (<code>contain: content</code>).
-            </p>
-          </div>
-
-          <div class="practice-breakdown-card">
-            <div class="practice-title">
-              <span class="badge badge-primary">Practice 6</span>
-              <span>Reduction of Unnecessary Network Requests</span>
-            </div>
-            <p class="text-sm text-secondary">
-              <strong>Why it matters:</strong> Unchecked search inputs fire an HTTP request per keystroke, overloading servers and triggering race conditions. We implement a <strong>300ms Debounce utility</strong>, <code>AbortController</code> to cancel stale in-flight requests, and an in-memory caching layer that avoids re-fetching identical API payloads.
-            </p>
-          </div>
-
         </section>
 
         <!-- ===================================================================
