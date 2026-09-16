@@ -693,28 +693,71 @@
           <div class="drawer-backdrop" id="q3-info-backdrop"></div>
           <div class="drawer" id="q3-info-drawer" role="dialog" aria-labelledby="q3-drawer-title" aria-modal="true">
             <div class="drawer-header">
-              <h3 id="q3-drawer-title">Q3: REST API & Failed Response Architecture</h3>
+              <h3 id="q3-drawer-title">Q3: REST API & Async Architecture Guide</h3>
               <button class="btn-icon btn-sm" id="q3-close-info-btn" aria-label="Close Drawer">✕</button>
             </div>
             <div class="drawer-body">
-              <h4>1. Asynchronous Handling with AbortController</h4>
+              <h4>1. What REST API Means</h4>
               <p class="text-sm mb-3">
-                In modern web applications, rapid user typing can dispatch multiple overlapping HTTP requests. We wrap native <code>fetch()</code> inside an <code>ApiService</code> that instantiates an <code>AbortController</code>. If a new request is fired while a previous request is in-flight, <code>controller.abort()</code> cancels the stale promise immediately, saving client bandwidth and preventing race condition bugs.
+                <strong>REST</strong> (Representational State Transfer) is an architectural style for network-based hypermedia systems. It uses standard HTTP methods (<code>GET</code>, <code>POST</code>, <code>PUT</code>, <code>DELETE</code>), stateless communication, and uniform resource identifiers (URIs) to exchange structured representations (typically JSON) between client and server.
               </p>
 
-              <h4>2. Defense Against Failed API Responses</h4>
+              <h4>2. API Endpoint Used</h4>
               <p class="text-sm mb-3">
-                <code>fetch()</code> only rejects promises on network dropouts, <strong>not</strong> on HTTP 4xx or 5xx status codes. We evaluate <code>if (!response.ok)</code> explicitly and throw typed errors (e.g. HTTP 404, HTTP 500).
+                This module connects to the live, publicly accessible endpoint: <br>
+                <code class="font-mono text-xs text-primary">https://jsonplaceholder.typicode.com/users</code><br>
+                It returns an array of 10 genuine user profile records containing nested objects (<code>address</code>, <code>company</code>).
               </p>
-              <ul class="text-sm text-secondary mb-3" style="padding-left: 1.25rem;">
-                <li><strong>HTTP 404/500</strong>: Caught and presented through a non-blocking error container with a dedicated Retry action.</li>
-                <li><strong>Network Offline</strong>: Detected via <code>navigator.onLine</code> before request execution.</li>
-                <li><strong>Timeout Protection</strong>: 10-second auto-abort threshold ensures the UI never hangs indefinitely.</li>
-              </ul>
 
-              <h4>3. Performance Caching</h4>
+              <h4>3. How fetch() Works</h4>
               <p class="text-sm mb-3">
-                Successful API payloads are stored in an in-memory <code>Map()</code> cache. Subsequent tab switches or local searches read directly from cache without hitting the network, while the "Reload API Data" button allows explicit cache-bypassing.
+                The native <code>window.fetch()</code> API initiates an asynchronous HTTP request over the network. It returns a JavaScript <code>Promise</code> that resolves to a <code>Response</code> object representing the server's HTTP response headers and body stream.
+              </p>
+
+              <h4>4. Promises & Async/Await Handling</h4>
+              <p class="text-sm mb-3">
+                We utilize modern <code>async/await</code> syntax over raw promise chaining (<code>.then()/.catch()</code>) for readable, linear asynchronous control flow. All asynchronous calls are enclosed in <code>try...catch...finally</code> blocks within <code>ApiService.fetchUsers()</code> to guarantee predictable state transitions.
+              </p>
+
+              <h4>5. How HTTP Failures Are Detected</h4>
+              <p class="text-sm mb-3">
+                A critical edge case in JavaScript is that <code>fetch()</code> does <strong>not</strong> reject its promise on HTTP 4xx (Client Error) or 5xx (Server Error) responses. We evaluate <code>if (!response.ok)</code> (which checks if <code>status</code> is in the 200–299 range) and explicitly throw descriptive errors (e.g. <code>API Error: 404 Not Found</code>).
+              </p>
+
+              <h4>6. How Network Failures Are Handled</h4>
+              <p class="text-sm mb-3">
+                True network disconnects (DNS resolution failures, server offline, internet loss) reject the <code>fetch()</code> promise. We inspect <code>navigator.onLine</code> and catch block errors, displaying a user-friendly error card with a dedicated <strong>"Retry Request"</strong> button without crashing the app.
+              </p>
+
+              <h4>7. How Loading States Work</h4>
+              <p class="text-sm mb-3">
+                Before initiating a network request, <code>this.isLoading</code> is set to <code>true</code> and animated skeleton cards (shimmer pulse effect) are rendered into the container. This prevents layout shift (CLS), gives instant visual feedback, and prevents confusing empty-state flashes while bytes are in transit.
+              </p>
+
+              <h4>8. How Search & Filtering Operate</h4>
+              <p class="text-sm mb-3">
+                Search queries are evaluated across multiple fields: <code>name</code>, <code>username</code>, <code>email</code>, <code>phone</code>, <code>city</code>, and <code>company</code> using case-insensitive substring matching (<code>includes()</code>) and trimmed whitespace. The City dropdown filter isolates users matching the selected location or returns all records when set to "all".
+              </p>
+
+              <h4>9. Why Search/Filter Do Not Trigger Unnecessary API Calls</h4>
+              <p class="text-sm mb-3">
+                Once the user dataset (10 records) is loaded into client memory (<code>this.rawUsers</code>), search and filter operations execute <strong>locally in-memory</strong>. Keystrokes are debounced (300ms) to prevent unnecessary DOM reflows. Refetching the entire endpoint for every keystroke would waste client bandwidth, increase server load, and introduce unnecessary network latency.
+              </p>
+
+              <h4>10. How AbortController Prevents Stale Requests</h4>
+              <p class="text-sm mb-3">
+                If the user clicks "Reload API Data" repeatedly or changes views, <code>ApiService</code> invokes <code>this.activeController.abort()</code> on the previous in-flight request signal. This aborts obsolete network streams, prevents race conditions, and guarantees older slow responses never overwrite newer state.
+              </p>
+
+              <h4>11. Safe Data Rendering (XSS Defense)</h4>
+              <p class="text-sm mb-3">
+                External API data is treated as untrusted input. We strictly avoid <code>innerHTML</code> for API values. All cards and table rows are constructed using <code>document.createElement()</code> and assigned via <code>textContent</code>. Missing properties are defensively normalized with fallbacks (e.g., "Unknown Location", "Independent").
+              </p>
+
+              <h4>12. No-Results vs API Failure Distinction</h4>
+              <p class="text-sm mb-3">
+                <strong>API Failure</strong> means the HTTP network transport or server responded with an error (showing an error card and retry action).<br>
+                <strong>No-Results</strong> means the API request succeeded (HTTP 200 OK), but the active search term or city filter matched 0 records in the dataset (showing an informational empty state prompting the user to adjust filters).
               </p>
             </div>
           </div>
