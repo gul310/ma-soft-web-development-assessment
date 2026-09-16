@@ -73,24 +73,30 @@ export const ValidationRules = {
       return { isValid: false, message: 'Phone number is too long (maximum 15 digits).' };
     }
 
-    // Check Pakistani number patterns
-    // 1) Starts with 03 (11 digits, e.g. 03001234567)
-    const isLocalPakistani = /^03[0-9]{9}$/.test(digitsOnly);
-    
-    // 2) Starts with 923 (12 digits, e.g. 923001234567)
-    const isIntlPakistani = /^923[0-9]{9}$/.test(digitsOnly);
-    
-    // 3) Starts with 00923 (14 digits)
-    const isDoubleZeroPakistani = /^00923[0-9]{9}$/.test(digitsOnly);
-
-    // 4) Standard international 10-15 digit phone
-    const isGeneralValid = digitsOnly.length >= 10 && digitsOnly.length <= 15;
-
-    if (!isLocalPakistani && !isIntlPakistani && !isDoubleZeroPakistani && !isGeneralValid) {
-      return { isValid: false, message: 'Please enter a valid phone number (e.g. 03001234567 or +923001234567).' };
+    // 1) Pakistani Local Mobile (11 digits, must start with 03)
+    if (clean.startsWith('0')) {
+      if (!/^03[0-9]{9}$/.test(digitsOnly)) {
+        return { isValid: false, message: 'Pakistani local numbers must start with 03 (e.g. 03001234567).' };
+      }
+      return { isValid: true, message: '' };
     }
 
-    return { isValid: true, message: '' };
+    // 2) Pakistani International (+923..., 923..., 00923...)
+    if (digitsOnly.startsWith('923') || digitsOnly.startsWith('00923')) {
+      const isIntlPak = /^923[0-9]{9}$/.test(digitsOnly) || /^00923[0-9]{9}$/.test(digitsOnly);
+      if (!isIntlPak) {
+        return { isValid: false, message: 'Pakistani international numbers must follow +923XXXXXXXXX format.' };
+      }
+      return { isValid: true, message: '' };
+    }
+
+    // 3) General International with '+' (e.g. +14155552671)
+    if (clean.startsWith('+') && digitsOnly.length >= 10 && digitsOnly.length <= 15) {
+      return { isValid: true, message: '' };
+    }
+
+    // Default reject if doesn't match known valid pattern
+    return { isValid: false, message: 'Please enter a valid phone number (e.g. 03001234567 or +923001234567).' };
   },
 
   /**
