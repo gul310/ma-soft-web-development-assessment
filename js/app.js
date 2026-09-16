@@ -148,6 +148,7 @@ class Application {
     // Initialize all controllers on page load to prepare DOM listeners
     domController.init();
     formController.init();
+    apiViewController.init();
     studentController.init();
     securityLab.init();
     gitVisualizer.init();
