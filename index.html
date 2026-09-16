@@ -1518,7 +1518,7 @@
                     <td><code class="font-mono">main</code></td>
                     <td>Production-ready, highly stable integrated codebase. Never contains untested code.</td>
                     <td><code class="font-mono">main (b01d3d0)</code></td>
-                    <td>Protected branch. Updated only via verified explicit merge commits. Direct pushes prohibited.</td>
+                    <td>Recommended branch policy: Updated via verified explicit merge commits. Direct pushes to main avoided.</td>
                   </tr>
                   <tr>
                     <td><span class="badge badge-primary">feature/*</span></td>
@@ -1935,7 +1935,7 @@
                 </div>
                 <p class="text-xs text-secondary">
                   <strong>Mechanism:</strong> Every commit in Git generates an immutable SHA-1/SHA-256 hash calculated over the file contents, parent commit hashes, author metadata, and timestamp. Once committed, a file snapshot cannot be modified or deleted without invalidating the entire subsequent DAG (Directed Acyclic Graph).<br>
-                  <strong>Recovery Guarantee:</strong> Even if a developer accidentally deletes local branches or resets a working directory, Git's Reference Log (<code>git reflog</code>) retains commit object pointers in the internal database for 30–90 days, enabling instant 100% recovery.
+                  <strong>Recovery Guarantee:</strong> Reflog can help recover references to previous local repository states, with retention depending on repository/configuration (typically 30–90 days before garbage collection).
                 </p>
               </div>
 
@@ -1967,8 +1967,8 @@
                   <span>Pre-Merge Code Review & Quality Gating</span>
                 </div>
                 <p class="text-xs text-secondary">
-                  <strong>Mechanism:</strong> Pull Requests (PRs) on platforms like GitHub allow team leads to inspect exact visual diffs, execute automated CI test runners, and verify security benchmarks BEFORE code is permitted into the <code>main</code> branch.<br>
-                  <strong>Quality Barrier:</strong> Bad code is blocked at the review gate rather than in production.
+                  <strong>Mechanism:</strong> In team workflows, Pull Requests (PRs) on platforms like GitHub allow developers to inspect exact visual diffs, execute automated CI test runners, and verify security benchmarks BEFORE code is permitted into the <code>main</code> branch.<br>
+                  <strong>Quality Barrier:</strong> Potential regressions are caught at the review gate prior to integration.
                 </p>
               </div>
 
