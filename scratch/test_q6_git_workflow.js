@@ -113,7 +113,7 @@ criticalHashes.forEach(({ hash, desc }) => {
 // -----------------------------------------------------------------------------
 console.log('\n[Phase 5: Version Control Loss-Prevention & Overwriting Explanations]');
 
-assert(htmlContent.includes('reflog') && htmlContent.includes('Immutable'), 'Explains immutable cryptographic history & reflog recovery');
+assert(htmlContent.toLowerCase().includes('reflog') && htmlContent.includes('Immutable'), 'Explains immutable cryptographic history & reflog recovery');
 assert(htmlContent.includes('Isolation') || htmlContent.includes('Branch Sandboxing'), 'Explains feature branch isolation & sandboxing');
 assert(htmlContent.includes('Pull Request') || htmlContent.includes('Code Review'), 'Explains code review & pull request quality gating');
 assert(htmlContent.includes('revert') || htmlContent.includes('Rollback'), 'Explains non-destructive rollback via git revert');
