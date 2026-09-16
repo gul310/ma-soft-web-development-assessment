@@ -269,12 +269,16 @@
   z-index: 200;
   display: none;
   opacity: 0;
-  transition: opacity var(--transition-normal);
+  pointer-events: none;
+  visibility: hidden;
+  transition: opacity var(--transition-normal), visibility var(--transition-normal);
 }
 
 .drawer-backdrop.open {
   display: block;
   opacity: 1;
+  pointer-events: auto;
+  visibility: visible;
 }
 
 .drawer {
@@ -289,13 +293,17 @@
   box-shadow: var(--shadow-xl);
   z-index: 210;
   transform: translateX(100%);
-  transition: transform var(--transition-smooth);
+  pointer-events: none;
+  visibility: hidden;
+  transition: transform var(--transition-smooth), visibility var(--transition-smooth);
   display: flex;
   flex-direction: column;
 }
 
 .drawer.open {
   transform: translateX(0);
+  pointer-events: auto;
+  visibility: visible;
 }
 
 .drawer-header {

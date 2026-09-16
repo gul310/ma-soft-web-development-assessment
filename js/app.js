@@ -154,60 +154,55 @@ class Application {
   }
 
   setupSidebarNavigation() {
-    // Event delegation on sidebar for ultra-reliable click capturing
-    const sidebar = qs('.app-sidebar');
-    if (sidebar) {
-      sidebar.addEventListener('click', (e) => {
-        const btn = e.target.closest('.nav-item-btn');
-        if (btn) {
-          const route = btn.dataset.route;
-          if (route) {
-            this.router.navigate(route);
-          }
-        }
-      });
-    }
-
-    // Direct binding fallback
-    const navButtons = qsa('.nav-item-btn');
-    navButtons.forEach(btn => {
-      btn.addEventListener('click', () => {
-        const route = btn.dataset.route;
+    // Global document-level click delegation for any navigation trigger
+    document.addEventListener('click', (e) => {
+      const navBtn = e.target.closest('.nav-item-btn');
+      if (navBtn) {
+        const route = navBtn.dataset.route;
         if (route) {
           this.router.navigate(route);
+          return;
         }
-      });
-      btn.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
+      }
+
+      const moduleCard = e.target.closest('.module-card');
+      if (moduleCard) {
+        const targetRoute = moduleCard.dataset.targetRoute;
+        if (targetRoute) {
+          this.router.navigate(targetRoute);
+          return;
+        }
+      }
+    });
+
+    // Global keyboard activation for accessible navigation
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        const navBtn = e.target.closest('.nav-item-btn');
+        if (navBtn && document.activeElement === navBtn) {
           e.preventDefault();
-          const route = btn.dataset.route;
+          const route = navBtn.dataset.route;
           if (route) {
             this.router.navigate(route);
+            return;
           }
         }
-      });
+
+        const moduleCard = e.target.closest('.module-card');
+        if (moduleCard && document.activeElement === moduleCard) {
+          e.preventDefault();
+          const targetRoute = moduleCard.dataset.targetRoute;
+          if (targetRoute) {
+            this.router.navigate(targetRoute);
+            return;
+          }
+        }
+      }
     });
   }
 
   setupOverviewModuleCards() {
-    const cards = qsa('.module-card');
-    cards.forEach(card => {
-      card.addEventListener('click', () => {
-        const targetRoute = card.dataset.targetRoute;
-        if (targetRoute) {
-          this.router.navigate(targetRoute);
-        }
-      });
-      card.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          const targetRoute = card.dataset.targetRoute;
-          if (targetRoute) {
-            this.router.navigate(targetRoute);
-          }
-        }
-      });
-    });
+    // Handled globally via setupSidebarNavigation()
   }
 }
 
