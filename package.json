@@ -1,0 +1,12 @@
+{
+  "name": "ma-soft-web-development-assessment",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "MA Soft Tech Solutions - Web Development Assessment Hub",
+  "scripts": {
+    "start": "npx -y serve . -l 8080",
+    "dev": "npx -y serve . -l 8080",
+    "serve": "npx -y serve . -l 8080",
+    "test": "node scratch/test_navigation_e2e.js && node scratch/audit_q1_q3.js"
+  }
+}
