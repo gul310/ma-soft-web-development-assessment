@@ -27,7 +27,12 @@ export class ApiViewController {
   }
 
   init() {
-    if (this.isInitialized) return;
+    if (this.isInitialized) {
+      if (this.rawUsers && this.rawUsers.length > 0) {
+        this.render();
+      }
+      return;
+    }
 
     this.setupEventListeners();
     this.fetchData();
@@ -135,16 +140,17 @@ export class ApiViewController {
     this.showLoadingState();
 
     const errorContainer = qs('#q3-error-container');
-    const resultsContainer = qs('#q3-results-container');
     if (errorContainer) errorContainer.style.display = 'none';
 
     try {
       const data = await apiService.fetchUsers({ bypassCache });
       this.rawUsers = data;
       this.populateCityDropdown(data);
+      this.isLoading = false;
       this.render();
       toast.success(`Successfully loaded ${data.length} users from REST API.`);
     } catch (err) {
+      this.isLoading = false;
       this.showErrorState(err.message);
       toast.error(`REST API Request Failed: ${err.message}`);
     } finally {
