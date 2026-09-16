@@ -267,15 +267,23 @@ export class ApiViewController {
   }
 
   createUserCard(user) {
+    const userName = user.name || 'Unknown User';
+    const userUsername = user.username ? `@${user.username}` : '@anonymous';
+    const userEmail = user.email || 'No email available';
+    const userPhone = user.phone || 'No phone provided';
+    const userCompany = user.company?.name || 'Independent / Unassigned';
+    const userCity = user.address?.city || 'Unknown Location';
+    const userWebsite = user.website || '';
+
     const avatar = createElement('div', {
       className: 'user-avatar',
-      text: getInitials(user.name)
+      text: getInitials(userName)
     });
 
     const nameHeader = createElement('div', {
       children: [
-        createElement('h4', { text: user.name, className: 'text-sm font-bold' }),
-        createElement('span', { className: 'text-xs text-muted font-mono', text: `@${user.username}` })
+        createElement('h4', { text: userName, className: 'text-sm font-bold' }),
+        createElement('span', { className: 'text-xs text-muted font-mono', text: userUsername })
       ]
     });
 
@@ -291,28 +299,28 @@ export class ApiViewController {
           className: 'user-detail-row',
           children: [
             createElement('span', { className: 'text-muted text-xs', text: '✉' }),
-            createElement('span', { text: user.email })
+            createElement('span', { text: userEmail })
           ]
         }),
         createElement('div', {
           className: 'user-detail-row',
           children: [
             createElement('span', { className: 'text-muted text-xs', text: '☎' }),
-            createElement('span', { text: user.phone })
+            createElement('span', { text: userPhone })
           ]
         }),
         createElement('div', {
           className: 'user-detail-row',
           children: [
             createElement('span', { className: 'text-muted text-xs', text: '🏢' }),
-            createElement('span', { text: `${user.company?.name || 'Independent'}` })
+            createElement('span', { text: userCompany })
           ]
         }),
         createElement('div', {
           className: 'user-detail-row',
           children: [
             createElement('span', { className: 'text-muted text-xs', text: '📍' }),
-            createElement('span', { text: `${user.address?.city || 'Unknown'}` })
+            createElement('span', { text: userCity })
           ]
         })
       ]
@@ -326,19 +334,23 @@ export class ApiViewController {
       }
     });
 
-    const websiteLink = createElement('a', {
-      className: 'text-xs font-semibold',
-      attributes: {
-        href: `https://${user.website}`,
-        target: '_blank',
-        rel: 'noopener noreferrer'
-      },
-      text: `🌐 ${user.website}`
-    });
+    const footerChildren = [viewJsonBtn];
+    if (userWebsite) {
+      const websiteLink = createElement('a', {
+        className: 'text-xs font-semibold',
+        attributes: {
+          href: userWebsite.startsWith('http') ? userWebsite : `https://${userWebsite}`,
+          target: '_blank',
+          rel: 'noopener noreferrer'
+        },
+        text: `🌐 ${userWebsite}`
+      });
+      footerChildren.push(websiteLink);
+    }
 
     const footer = createElement('div', {
       className: 'user-card-footer',
-      children: [viewJsonBtn, websiteLink]
+      children: footerChildren
     });
 
     return createElement('div', {
@@ -369,6 +381,13 @@ export class ApiViewController {
 
     const tbody = createElement('tbody');
     batchRender(tbody, users, (user) => {
+      const userName = user.name || 'Unknown User';
+      const userUsername = user.username ? `@${user.username}` : '@anonymous';
+      const userEmail = user.email || 'No email available';
+      const userPhone = user.phone || 'N/A';
+      const userCompany = user.company?.name || 'Independent';
+      const userCity = user.address?.city || 'Unknown';
+
       return createElement('tr', {
         children: [
           createElement('td', {
@@ -379,22 +398,22 @@ export class ApiViewController {
                   createElement('div', {
                     className: 'user-avatar',
                     attributes: { style: 'width: 28px; height: 28px; font-size: 0.75rem;' },
-                    text: getInitials(user.name)
+                    text: getInitials(userName)
                   }),
                   createElement('div', {
                     children: [
-                      createElement('strong', { text: user.name }),
-                      createElement('div', { className: 'text-xs text-muted font-mono', text: `@${user.username}` })
+                      createElement('strong', { text: userName }),
+                      createElement('div', { className: 'text-xs text-muted font-mono', text: userUsername })
                     ]
                   })
                 ]
               })
             ]
           }),
-          createElement('td', { text: user.email }),
-          createElement('td', { text: user.phone }),
-          createElement('td', { text: user.company?.name || 'N/A' }),
-          createElement('td', { text: user.address?.city || 'N/A' }),
+          createElement('td', { text: userEmail }),
+          createElement('td', { text: userPhone }),
+          createElement('td', { text: userCompany }),
+          createElement('td', { text: userCity }),
           createElement('td', {
             children: [
               createElement('button', {
