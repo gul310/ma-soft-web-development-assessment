@@ -1450,134 +1450,684 @@
           <div class="view-header">
             <div class="view-header-top">
               <div class="view-title-group">
-                <h2>Q6: Git / GitHub Workflow & Version Control</h2>
+                <h2>Q6: Git & GitHub Workflow / Version Control</h2>
                 <span class="view-badge-score">10 Marks</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="badge badge-success">✓ Production Workflow</span>
+                <span class="badge badge-neutral font-mono text-xs">Branch: feature/q6-git-workflow</span>
               </div>
             </div>
             <p class="view-description">
-              Demonstrating professional Git version control workflows: branch creation, atomic conventional commits, pull request isolation, merge conflict resolution, and architectural explanation of how version control prevents accidental data loss.
+              Professional version control architecture demonstrating feature-branch isolation, atomic conventional commits, remote synchronization, non-destructive merge strategies, conflict reconciliation, and how Git cryptographically protects against accidental loss and unauthorized overwriting.
             </p>
           </div>
 
-          <!-- Visual Git Graph Hub -->
-          <div class="git-visualizer-container">
-            <h3 class="mb-2">Repository Branch Tree & Merge Lifecycle</h3>
-            <p class="text-sm text-secondary mb-4">
-              Visualizing the Git tree for this assessment from initial commit to feature branch isolation and integration into <code class="font-mono">main</code>.
+          <!-- Section 1: Live Repository Metadata Banner -->
+          <div class="card mb-4" style="background: linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(6, 182, 212, 0.08) 100%); border-color: rgba(99, 102, 241, 0.25);">
+            <div class="flex items-center justify-between flex-wrap gap-3">
+              <div>
+                <span class="text-xs text-muted uppercase tracking-wider font-bold block mb-1">Active Assessment Repository</span>
+                <h3 class="font-mono text-primary" style="font-size: 1.15rem; margin: 0;">ma-soft-web-development-assessment</h3>
+              </div>
+              <div class="flex items-center gap-2 flex-wrap">
+                <div class="benchmark-box" style="padding: 0.5rem 0.85rem;">
+                  <span class="text-xs text-muted block">Current Main</span>
+                  <span class="font-mono text-xs text-success font-bold" id="q6-main-hash">b01d3d0</span>
+                </div>
+                <div class="benchmark-box" style="padding: 0.5rem 0.85rem;">
+                  <span class="text-xs text-muted block">Active Feature Branch</span>
+                  <span class="font-mono text-xs text-warning font-bold">feature/q6-git-workflow</span>
+                </div>
+                <div class="benchmark-box" style="padding: 0.5rem 0.85rem;">
+                  <span class="text-xs text-muted block">Remote Origin</span>
+                  <span class="font-mono text-xs text-accent font-bold">origin/main</span>
+                </div>
+                <div class="benchmark-box" style="padding: 0.5rem 0.85rem;">
+                  <span class="text-xs text-muted block">Working Tree</span>
+                  <span class="badge badge-success text-xs">Clean (0 Uncommitted)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 2: Repository Branch Strategy & Active Branches Matrix -->
+          <div class="card mb-4">
+            <div class="card-header">
+              <h3 class="card-title">🌿 Repository Branching Strategy & Lifecycle Policy</h3>
+              <span class="badge badge-primary">Branch Isolation</span>
+            </div>
+            <p class="text-xs text-secondary mb-3">
+              To guarantee software stability and prevent catastrophic regression, code is developed in isolation and only integrated into <code class="font-mono">main</code> after passing automated test suites and peer code reviews.
             </p>
 
-            <div class="git-tree-graph">
-              <div class="git-commit-node" style="border-color: var(--accent-primary);">
-                <span class="git-commit-hash">commit 8a1f4e</span>
-                <span class="badge badge-primary">main</span>
-                <div>
-                  <strong>chore: initialize project workspace and core architecture</strong>
-                  <div class="text-xs text-muted">Initialized repository, CSS design system, and SPA shell</div>
+            <div class="table-responsive">
+              <table class="data-table" aria-label="Branch Strategy Matrix">
+                <thead>
+                  <tr>
+                    <th scope="col">Branch Type</th>
+                    <th scope="col">Naming Convention</th>
+                    <th scope="col">Purpose & Role</th>
+                    <th scope="col">Assessment Examples</th>
+                    <th scope="col">Lifecycle & Merge Policy</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><span class="badge badge-success">main</span></td>
+                    <td><code class="font-mono">main</code></td>
+                    <td>Production-ready, highly stable integrated codebase. Never contains untested code.</td>
+                    <td><code class="font-mono">main (b01d3d0)</code></td>
+                    <td>Protected branch. Updated only via verified explicit merge commits. Direct pushes prohibited.</td>
+                  </tr>
+                  <tr>
+                    <td><span class="badge badge-primary">feature/*</span></td>
+                    <td><code class="font-mono">feature/&lt;scope&gt;</code></td>
+                    <td>Isolated development of independent functionality without risking production stability.</td>
+                    <td>
+                      <code class="font-mono">feature/q1-dom-manipulation</code><br>
+                      <code class="font-mono">feature/q2-form-validation</code><br>
+                      <code class="font-mono">feature/q3-rest-api</code><br>
+                      <code class="font-mono">feature/q4-student-crud</code><br>
+                      <code class="font-mono">feature/q5-security-performance</code><br>
+                      <code class="font-mono">feature/q6-git-workflow</code>
+                    </td>
+                    <td>Branched from <code class="font-mono">main</code>, committed atomically, pushed to remote, merged via <code class="font-mono">git merge --no-ff</code> upon verification.</td>
+                  </tr>
+                  <tr>
+                    <td><span class="badge badge-warning">fix/*</span></td>
+                    <td><code class="font-mono">fix/&lt;scope&gt;</code></td>
+                    <td>Targeted correction of verified defects or integration incompatibilities.</td>
+                    <td>
+                      <code class="font-mono">fix/q1-q3-functional-integration</code><br>
+                      <code class="font-mono">fix/q1-q3-navigation</code><br>
+                      <code class="font-mono">fix/q1-q3-ui-interaction</code><br>
+                      <code class="font-mono">fix/external-browser-run</code>
+                    </td>
+                    <td>Spun off <code class="font-mono">main</code>, validated against regression suite, merged and pushed cleanly.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="mt-3 p-3 bg-secondary rounded" style="border-left: 4px solid var(--accent-primary);">
+              <span class="text-xs text-muted font-bold block mb-1">⚠️ Why Developers Must Avoid Direct Commits to Main:</span>
+              <p class="text-xs text-secondary" style="margin: 0;">
+                Direct commits to <code class="font-mono">main</code> bypass regression testing, introduce broken work-in-progress code to collaborators, eliminate the ability to conduct code reviews, and risk irreversible data corruption. Isolated feature branches ensure that half-finished features never compromise the working application.
+              </p>
+            </div>
+          </div>
+
+          <!-- Section 3: Visual Repository Git Graph Tree -->
+          <div class="git-visualizer-container mb-4">
+            <div class="card-header" style="border: none; padding: 0 0 1rem 0;">
+              <h3 class="card-title">🌳 Verified Repository Commit History & Merge Graph</h3>
+              <span class="badge badge-info font-mono text-xs">Real Git DAG</span>
+            </div>
+            <p class="text-xs text-secondary mb-3">
+              The tree below represents the exact cryptographically hashed commit DAG from this repository's genuine Git log (from root commit <code class="font-mono">f5a4439</code> to current main <code class="font-mono">b01d3d0</code>):
+            </p>
+
+            <!-- Search / Filter bar for commit tree -->
+            <div class="flex items-center justify-between flex-wrap gap-2 mb-3">
+              <div class="flex items-center gap-2 flex-grow">
+                <input type="text" id="q6-commit-search" class="form-input text-xs font-mono" placeholder="🔍 Filter commits by hash, message, or branch tag..." style="max-width: 380px;">
+                <select id="q6-commit-filter" class="form-select text-xs" style="max-width: 160px;">
+                  <option value="all">All Commits</option>
+                  <option value="merge">Merge Commits only</option>
+                  <option value="feat">Features (feat)</option>
+                  <option value="test">Tests (test)</option>
+                  <option value="fix">Fixes (fix)</option>
+                </select>
+              </div>
+              <span class="text-xs text-muted font-mono" id="q6-commit-count-badge">Showing Commits</span>
+            </div>
+
+            <div class="git-tree-graph" id="q6-git-tree-container">
+              <!-- Dynamically populated and statically pre-rendered with real hashes -->
+              <div class="git-commit-node" data-type="merge" data-hash="b01d3d0" style="border-left-color: var(--color-success); background: rgba(16, 185, 129, 0.05);">
+                <span class="git-commit-hash">b01d3d0</span>
+                <span class="badge badge-success">main</span>
+                <div class="flex-grow">
+                  <div class="flex items-center justify-between flex-wrap gap-1">
+                    <strong>merge: integrate Q5 security and performance feature</strong>
+                    <span class="text-xs text-muted font-mono">Merge commit</span>
+                  </div>
+                  <div class="text-xs text-secondary">Integrated XSS sandbox, benchmark tool, 33/33 tests passing, updated total to 204/204</div>
                 </div>
               </div>
 
-              <div class="git-commit-node" style="border-color: var(--accent-secondary); margin-left: 2rem;">
-                <span class="git-commit-hash">commit 9c3b21</span>
-                <span class="badge badge-neutral">feature/q1-dom-manipulation</span>
-                <div>
-                  <strong>feat(q1): implement dynamic item manager with event delegation</strong>
-                  <div class="text-xs text-muted">Added add/edit/delete with undo toasts, filters, and batch DOM rendering</div>
-                </div>
-              </div>
-
-              <div class="git-commit-node" style="border-color: var(--accent-secondary); margin-left: 2rem;">
-                <span class="git-commit-hash">commit b4d108</span>
-                <span class="badge badge-neutral">feature/q2-form-validation</span>
-                <div>
-                  <strong>feat(q2): implement registration form with password strength engine</strong>
-                  <div class="text-xs text-muted">RFC email regex, phone auto-masking, 5-point password evaluation</div>
-                </div>
-              </div>
-
-              <div class="git-commit-node" style="border-color: var(--accent-secondary); margin-left: 2rem;">
-                <span class="git-commit-hash">commit e7f229</span>
-                <span class="badge badge-neutral">feature/q3-api-integration</span>
-                <div>
-                  <strong>feat(q3): integrate public REST API with simulation controls & abort</strong>
-                  <div class="text-xs text-muted">JSONPlaceholder fetch, skeleton states, debounced search, error simulator</div>
-                </div>
-              </div>
-
-              <div class="git-commit-node" style="border-color: var(--accent-secondary); margin-left: 2rem;">
-                <span class="git-commit-hash">commit f18a55</span>
-                <span class="badge badge-neutral">feature/q4-student-crud</span>
-                <div>
-                  <strong>feat(q4): create student information management system (SIMS)</strong>
-                  <div class="text-xs text-muted">Full CRUD, search, sorting, CSV export, and persistent storage</div>
-                </div>
-              </div>
-
-              <div class="git-commit-node" style="border-color: var(--accent-secondary); margin-left: 2rem;">
-                <span class="git-commit-hash">commit a26d91</span>
+              <div class="git-commit-node" data-type="test" data-hash="d53569d" style="border-left-color: var(--accent-secondary); margin-left: 1.5rem;">
+                <span class="git-commit-hash">d53569d</span>
                 <span class="badge badge-neutral">feature/q5-security-performance</span>
-                <div>
-                  <strong>feat(q5): implement security testbench and performance benchmark</strong>
-                  <div class="text-xs text-muted">Live XSS sandbox, DocumentFragment benchmark, and 6 practice audits</div>
+                <div class="flex-grow">
+                  <div class="flex items-center justify-between flex-wrap gap-1">
+                    <strong>test(q5): add security and performance regression tests</strong>
+                    <span class="text-xs text-muted font-mono">Automated Suite</span>
+                  </div>
+                  <div class="text-xs text-secondary">Added 33 automated test assertions for XSS, storage safety, debouncing, and DOM fragments</div>
                 </div>
               </div>
 
-              <div class="git-commit-node" style="border-color: var(--color-success);">
-                <span class="git-commit-hash">commit d43e70</span>
-                <span class="badge badge-success">main (merged)</span>
-                <div>
-                  <strong>merge: integrate all feature branches into production release</strong>
-                  <div class="text-xs text-muted">Completed assessment submission with 100% test coverage and documentation</div>
+              <div class="git-commit-node" data-type="feat" data-hash="5384e74" style="border-left-color: var(--accent-secondary); margin-left: 1.5rem;">
+                <span class="git-commit-hash">5384e74</span>
+                <span class="badge badge-neutral">feature/q5-security-performance</span>
+                <div class="flex-grow">
+                  <div class="flex items-center justify-between flex-wrap gap-1">
+                    <strong>feat(q5): implement security and performance improvements</strong>
+                    <span class="text-xs text-muted font-mono">Feature</span>
+                  </div>
+                  <div class="text-xs text-secondary">Built live XSS sandbox, DOM reflow benchmark, input validation engine, and technical audit</div>
                 </div>
               </div>
-            </div>
 
-            <!-- Terminal Commands Interactive Showcase -->
-            <h4 class="mt-4 mb-2">Step-by-Step Command Workflow</h4>
-            <div class="terminal-box">
-              <div class="flex justify-between items-center mb-2">
-                <span class="text-xs text-muted">Git Command Sequence</span>
-                <button class="btn btn-outline btn-sm copy-cmd-btn" data-clipboard="git init; git checkout -b feature/student-crud; git add .; git commit -m 'feat: implement student CRUD'; git checkout main; git merge feature/student-crud">Copy Script</button>
+              <div class="git-commit-node" data-type="merge" data-hash="899b0ed" style="border-left-color: var(--color-success); background: rgba(16, 185, 129, 0.05);">
+                <span class="git-commit-hash">899b0ed</span>
+                <span class="badge badge-success">main</span>
+                <div class="flex-grow">
+                  <div class="flex items-center justify-between flex-wrap gap-1">
+                    <strong>merge: integrate Q4 student CRUD feature</strong>
+                    <span class="text-xs text-muted font-mono">Merge commit</span>
+                  </div>
+                  <div class="text-xs text-secondary">Integrated full Student Management System with 57/57 passing regression tests</div>
+                </div>
               </div>
-              <div><span class="terminal-comment"># 1. Initialize Git Repository</span></div>
-              <div><span class="terminal-prompt">$ </span><span class="terminal-cmd">git init</span></div>
-              <div><span class="terminal-comment"># 2. Create and Switch to Feature Branch</span></div>
-              <div><span class="terminal-prompt">$ </span><span class="terminal-cmd">git checkout -b feature/q4-student-crud</span></div>
-              <div><span class="terminal-comment"># 3. Stage & Commit Atomic Changes</span></div>
-              <div><span class="terminal-prompt">$ </span><span class="terminal-cmd">git add js/modules/q4-student-crud/</span></div>
-              <div><span class="terminal-prompt">$ </span><span class="terminal-cmd">git commit -m "feat(q4): implement student CRUD with persistent storage"</span></div>
-              <div><span class="terminal-comment"># 4. Push Feature Branch to Remote Origin</span></div>
-              <div><span class="terminal-prompt">$ </span><span class="terminal-cmd">git push -u origin feature/q4-student-crud</span></div>
-              <div><span class="terminal-comment"># 5. Merge Feature Branch into Main</span></div>
-              <div><span class="terminal-prompt">$ </span><span class="terminal-cmd">git checkout main &amp;&amp; git merge --no-ff feature/q4-student-crud</span></div>
+
+              <div class="git-commit-node" data-type="test" data-hash="14aa9eb" style="border-left-color: var(--accent-secondary); margin-left: 1.5rem;">
+                <span class="git-commit-hash">14aa9eb</span>
+                <span class="badge badge-neutral">feature/q4-student-crud</span>
+                <div class="flex-grow">
+                  <div class="flex items-center justify-between flex-wrap gap-1">
+                    <strong>test(q4): add student CRUD regression coverage</strong>
+                    <span class="text-xs text-muted font-mono">Automated Suite</span>
+                  </div>
+                  <div class="text-xs text-secondary">57 unit & E2E assertions for model persistence, validation, immutability, undo, and search</div>
+                </div>
+              </div>
+
+              <div class="git-commit-node" data-type="feat" data-hash="08b92b5" style="border-left-color: var(--accent-secondary); margin-left: 1.5rem;">
+                <span class="git-commit-hash">08b92b5</span>
+                <span class="badge badge-neutral">feature/q4-student-crud</span>
+                <div class="flex-grow">
+                  <div class="flex items-center justify-between flex-wrap gap-1">
+                    <strong>feat(q4): implement student management CRUD</strong>
+                    <span class="text-xs text-muted font-mono">Feature</span>
+                  </div>
+                  <div class="text-xs text-secondary">MVC architecture: studentModel.js, studentView.js, studentController.js with full CRUD & search</div>
+                </div>
+              </div>
+
+              <div class="git-commit-node" data-type="test" data-hash="cd2fba1" style="border-left-color: var(--accent-primary);">
+                <span class="git-commit-hash">cd2fba1</span>
+                <span class="badge badge-primary">main</span>
+                <div class="flex-grow">
+                  <div class="flex items-center justify-between flex-wrap gap-1">
+                    <strong>test: preserve Q1-Q3 automated regression test suites</strong>
+                    <span class="text-xs text-muted font-mono">Test Infrastructure</span>
+                  </div>
+                  <div class="text-xs text-secondary">Preserved 114 automated tests in scratch/ directory for continuous regression safety</div>
+                </div>
+              </div>
+
+              <div class="git-commit-node" data-type="merge" data-hash="5c5416b" style="border-left-color: var(--color-success); background: rgba(16, 185, 129, 0.05);">
+                <span class="git-commit-hash">5c5416b</span>
+                <span class="badge badge-success">main</span>
+                <div class="flex-grow">
+                  <div class="flex items-center justify-between flex-wrap gap-1">
+                    <strong>merge: integrate external browser run configuration</strong>
+                    <span class="text-xs text-muted font-mono">Merge commit</span>
+                  </div>
+                  <div class="text-xs text-secondary">Configured VS Code tasks, package.json serve scripts for reliable HTTP localhost:8080 execution</div>
+                </div>
+              </div>
+
+              <div class="git-commit-node" data-type="fix" data-hash="336d08e" style="border-left-color: var(--color-warning); margin-left: 1.5rem;">
+                <span class="git-commit-hash">336d08e</span>
+                <span class="badge badge-warning">fix/external-browser-run</span>
+                <div class="flex-grow">
+                  <div class="flex items-center justify-between flex-wrap gap-1">
+                    <strong>fix: make external browser run reliably</strong>
+                    <span class="text-xs text-muted font-mono">Hotfix</span>
+                  </div>
+                  <div class="text-xs text-secondary">Resolved launch.json browser auto-open and HTTP origin binding</div>
+                </div>
+              </div>
+
+              <div class="git-commit-node" data-type="fix" data-hash="dccfc6b" style="border-left-color: var(--color-success); background: rgba(16, 185, 129, 0.05);">
+                <span class="git-commit-hash">dccfc6b</span>
+                <span class="badge badge-success">main</span>
+                <div class="flex-grow">
+                  <div class="flex items-center justify-between flex-wrap gap-1">
+                    <strong>merge: integrate Q1-Q3 navigation fix</strong>
+                    <span class="text-xs text-muted font-mono">Merge commit</span>
+                  </div>
+                  <div class="text-xs text-secondary">Unified hash routing aliases across all SPA views</div>
+                </div>
+              </div>
+
+              <div class="git-commit-node" data-type="merge" data-hash="f84e534" style="border-left-color: var(--color-success); background: rgba(16, 185, 129, 0.05);">
+                <span class="git-commit-hash">f84e534</span>
+                <span class="badge badge-success">main</span>
+                <div class="flex-grow">
+                  <div class="flex items-center justify-between flex-wrap gap-1">
+                    <strong>fix: integrate Q1-Q3 functional corrections</strong>
+                    <span class="text-xs text-muted font-mono">Merge commit</span>
+                  </div>
+                  <div class="text-xs text-secondary">Merged REST API explorer and end-to-end integration fixes into main</div>
+                </div>
+              </div>
+
+              <div class="git-commit-node" data-type="feat" data-hash="0b03884" style="border-left-color: var(--accent-secondary); margin-left: 1.5rem;">
+                <span class="git-commit-hash">0b03884</span>
+                <span class="badge badge-neutral">feature/q3-rest-api</span>
+                <div class="flex-grow">
+                  <div class="flex items-center justify-between flex-wrap gap-1">
+                    <strong>feat(q3): integrate REST API explorer</strong>
+                    <span class="text-xs text-muted font-mono">Feature</span>
+                  </div>
+                  <div class="text-xs text-secondary">Live JSONPlaceholder API consumer with search, filter, AbortController, and error simulators</div>
+                </div>
+              </div>
+
+              <div class="git-commit-node" data-type="merge" data-hash="d616fef" style="border-left-color: var(--color-success); background: rgba(16, 185, 129, 0.05);">
+                <span class="git-commit-hash">d616fef</span>
+                <span class="badge badge-success">main</span>
+                <div class="flex-grow">
+                  <div class="flex items-center justify-between flex-wrap gap-1">
+                    <strong>merge: integrate Q2 registration form validation</strong>
+                    <span class="text-xs text-muted font-mono">Merge commit</span>
+                  </div>
+                  <div class="text-xs text-secondary">Integrated 5-field registration form with password strength engine into main</div>
+                </div>
+              </div>
+
+              <div class="git-commit-node" data-type="feat" data-hash="024a6b2" style="border-left-color: var(--accent-secondary); margin-left: 1.5rem;">
+                <span class="git-commit-hash">024a6b2</span>
+                <span class="badge badge-neutral">feature/q2-form-validation</span>
+                <div class="flex-grow">
+                  <div class="flex items-center justify-between flex-wrap gap-1">
+                    <strong>feat(q2): implement registration form validation</strong>
+                    <span class="text-xs text-muted font-mono">Feature</span>
+                  </div>
+                  <div class="text-xs text-secondary">RFC email regex, Pakistani phone auto-formatter, and 5-point password strength evaluation</div>
+                </div>
+              </div>
+
+              <div class="git-commit-node" data-type="merge" data-hash="873a6c6" style="border-left-color: var(--color-success); background: rgba(16, 185, 129, 0.05);">
+                <span class="git-commit-hash">873a6c6</span>
+                <span class="badge badge-success">main</span>
+                <div class="flex-grow">
+                  <div class="flex items-center justify-between flex-wrap gap-1">
+                    <strong>merge: integrate Q1 DOM manipulation feature into main</strong>
+                    <span class="text-xs text-muted font-mono">Merge commit</span>
+                  </div>
+                  <div class="text-xs text-secondary">First feature branch integrated into main with clean test baseline</div>
+                </div>
+              </div>
+
+              <div class="git-commit-node" data-type="feat" data-hash="9e9541c" style="border-left-color: var(--accent-secondary); margin-left: 1.5rem;">
+                <span class="git-commit-hash">9e9541c</span>
+                <span class="badge badge-neutral">feature/q1-dom-manipulation</span>
+                <div class="flex-grow">
+                  <div class="flex items-center justify-between flex-wrap gap-1">
+                    <strong>feat(q1): implement advanced DOM item manager</strong>
+                    <span class="text-xs text-muted font-mono">Feature</span>
+                  </div>
+                  <div class="text-xs text-secondary">Dynamic item manager with inline edit, undo toasts, filters, and batch DOM rendering</div>
+                </div>
+              </div>
+
+              <div class="git-commit-node" data-type="chore" data-hash="f5a4439" style="border-left-color: var(--text-muted);">
+                <span class="git-commit-hash">f5a4439</span>
+                <span class="badge badge-neutral">main (root)</span>
+                <div class="flex-grow">
+                  <div class="flex items-center justify-between flex-wrap gap-1">
+                    <strong>chore: initialize assessment project</strong>
+                    <span class="text-xs text-muted font-mono">Root Commit</span>
+                  </div>
+                  <div class="text-xs text-secondary">Initial repository setup with CSS tokens, layout architecture, and vanilla JS structure</div>
+                </div>
+              </div>
             </div>
           </div>
 
-          <!-- Version Control Theory & Loss Prevention -->
+          <!-- Section 4: Conventional Meaningful Commits Standard -->
+          <div class="card mb-4">
+            <div class="card-header">
+              <h3 class="card-title">📝 Meaningful Conventional Commits Specification</h3>
+              <span class="badge badge-primary">Atomic Commits</span>
+            </div>
+            <p class="text-xs text-secondary mb-3">
+              This repository strictly adheres to the <strong>Conventional Commits 1.0.0</strong> format: <code>&lt;type&gt;(&lt;scope&gt;): &lt;imperative description&gt;</code>.
+            </p>
+
+            <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem;">
+              <div class="practice-breakdown-card" style="margin: 0;">
+                <div class="practice-title">
+                  <span class="badge badge-primary font-mono text-xs">feat(scope):</span>
+                  <span>New User Feature</span>
+                </div>
+                <p class="text-xs text-secondary">
+                  Introduces brand new application functionality.<br>
+                  <code class="font-mono text-xs text-accent">feat(q4): implement student management CRUD</code>
+                </p>
+              </div>
+
+              <div class="practice-breakdown-card" style="margin: 0;">
+                <div class="practice-title">
+                  <span class="badge badge-warning font-mono text-xs">fix(scope):</span>
+                  <span>Bug & Defect Fix</span>
+                </div>
+                <p class="text-xs text-secondary">
+                  Patches an identified bug without altering intended API.<br>
+                  <code class="font-mono text-xs text-accent">fix: repair Q1-Q3 UI navigation</code>
+                </p>
+              </div>
+
+              <div class="practice-breakdown-card" style="margin: 0;">
+                <div class="practice-title">
+                  <span class="badge badge-info font-mono text-xs">test(scope):</span>
+                  <span>Test Coverage Addition</span>
+                </div>
+                <p class="text-xs text-secondary">
+                  Adds or refactors unit/E2E test suites without production code changes.<br>
+                  <code class="font-mono text-xs text-accent">test(q5): add security regression tests</code>
+                </p>
+              </div>
+
+              <div class="practice-breakdown-card" style="margin: 0;">
+                <div class="practice-title">
+                  <span class="badge badge-success font-mono text-xs">merge:</span>
+                  <span>Branch Integration</span>
+                </div>
+                <p class="text-xs text-secondary">
+                  Explicitly documents when a verified feature branch enters <code class="font-mono">main</code>.<br>
+                  <code class="font-mono text-xs text-accent">merge: integrate Q5 security and performance</code>
+                </p>
+              </div>
+            </div>
+
+            <div class="mt-3">
+              <h4 class="text-xs font-bold text-muted uppercase tracking-wider mb-2">Why Meaningful Commits Matter to Engineering Teams:</h4>
+              <ul class="text-xs text-secondary" style="padding-left: 1.25rem; line-height: 1.6;">
+                <li><strong>Logical Atomic Changes:</strong> Each commit encapsulates one discrete, complete change that can be tested independently.</li>
+                <li><strong>Bisectability & Bug Hunting:</strong> Tools like <code>git bisect</code> can pinpoint the exact commit that introduced a defect in seconds.</li>
+                <li><strong>Automated Changelogs & Semantic Versioning:</strong> Commit headers can automatically generate release notes and trigger semantic version bumps (SemVer).</li>
+                <li><strong>Safe Granular Rollbacks:</strong> Reverting a faulty change using <code>git revert &lt;hash&gt;</code> is clean and risk-free because unrelated files are never tangled together.</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Section 5: Step-by-Step Feature Development & Push/Pull/Merge Workflow -->
+          <div class="card mb-4">
+            <div class="card-header">
+              <h3 class="card-title">🚀 Professional Step-by-Step Git Workflow (Branch &rarr; Push &rarr; Merge)</h3>
+              <span class="badge badge-neutral">Standard Operating Procedure</span>
+            </div>
+            <p class="text-xs text-secondary mb-3">
+              The exact sequential command lifecycle followed throughout this assessment. Click <strong>Copy</strong> to copy any command to your clipboard.
+            </p>
+
+            <div class="terminal-box">
+              <div class="flex justify-between items-center mb-3">
+                <span class="text-xs text-muted font-bold uppercase tracking-wider">Interactive Command Sequence</span>
+                <button type="button" class="btn btn-outline btn-sm copy-cmd-btn" data-clipboard="git status&#10;git checkout -b feature/q6-git-workflow&#10;git add index.html js/modules/q6-git-workflow/ scratch/test_q6_git_workflow.js&#10;git commit -m 'feat(q6): add git workflow documentation and visualization'&#10;git push -u origin feature/q6-git-workflow&#10;git checkout main&#10;git pull origin main&#10;git merge --no-ff feature/q6-git-workflow -m 'merge: integrate Q6 git workflow feature'&#10;git push origin main">Copy Full Workflow</button>
+              </div>
+
+              <div class="mb-2">
+                <span class="terminal-comment"># 1. Verify working tree is clean and synced with remote main</span><br>
+                <span class="terminal-prompt">$ </span><span class="terminal-cmd">git status</span><br>
+                <span class="terminal-prompt">$ </span><span class="terminal-cmd">git pull origin main</span>
+              </div>
+
+              <div class="mb-2">
+                <span class="terminal-comment"># 2. Branch off main to start feature isolation</span><br>
+                <span class="terminal-prompt">$ </span><span class="terminal-cmd">git checkout -b feature/q6-git-workflow</span>
+              </div>
+
+              <div class="mb-2">
+                <span class="terminal-comment"># 3. Stage discrete modified files and commit with conventional message</span><br>
+                <span class="terminal-prompt">$ </span><span class="terminal-cmd">git add index.html js/modules/q6-git-workflow/ scratch/test_q6_git_workflow.js</span><br>
+                <span class="terminal-prompt">$ </span><span class="terminal-cmd">git commit -m "feat(q6): add git workflow documentation and visualization"</span>
+              </div>
+
+              <div class="mb-2">
+                <span class="terminal-comment"># 4. Push isolated feature branch to GitHub remote origin for peer review & CI testing</span><br>
+                <span class="terminal-prompt">$ </span><span class="terminal-cmd">git push -u origin feature/q6-git-workflow</span>
+              </div>
+
+              <div class="mb-2">
+                <span class="terminal-comment"># 5. Switch to main, pull latest updates, and perform non-fast-forward merge</span><br>
+                <span class="terminal-prompt">$ </span><span class="terminal-cmd">git checkout main</span><br>
+                <span class="terminal-prompt">$ </span><span class="terminal-cmd">git pull origin main</span><br>
+                <span class="terminal-prompt">$ </span><span class="terminal-cmd">git merge --no-ff feature/q6-git-workflow -m "merge: integrate Q6 git workflow feature"</span>
+              </div>
+
+              <div>
+                <span class="terminal-comment"># 6. Push integrated main to origin (Zero destructive commands like force-push)</span><br>
+                <span class="terminal-prompt">$ </span><span class="terminal-cmd">git push origin main</span>
+              </div>
+            </div>
+
+            <div class="mt-3 p-3 bg-secondary rounded" style="border-left: 4px solid var(--color-danger);">
+              <span class="text-xs text-muted font-bold block mb-1">🛑 Prohibited Destructive Git Commands Policy:</span>
+              <p class="text-xs text-secondary" style="margin: 0;">
+                Commands such as <code class="font-mono">git push --force</code>, <code class="font-mono">git reset --hard</code>, and <code class="font-mono">git rebase -i</code> on published public branches rewrite Git commit histories, destroy collaborators' work trees, and erase cryptographic audit trails. In production repositories, force-pushing to shared branches is strictly disabled.
+              </p>
+            </div>
+          </div>
+
+          <!-- Section 6: Comprehensive Deep Dive: How Git Prevents Loss of Work & Overwriting -->
+          <div class="card mb-4">
+            <div class="card-header">
+              <h3 class="card-title">🛡️ Architectural Analysis: How Version Control Prevents Loss & Overwriting</h3>
+              <span class="badge badge-success">Technical Deep-Dive</span>
+            </div>
+            <p class="text-xs text-secondary mb-3">
+              Version control is not merely a backup tool—it is a cryptographic safety architecture engineered to guarantee collaboration integrity across distributed teams:
+            </p>
+
+            <div class="flex-col gap-3">
+              <div class="practice-breakdown-card">
+                <div class="practice-title">
+                  <span class="badge badge-primary">Pillar A</span>
+                  <span>Protection Against Loss of Work (Immutable Cryptographic History)</span>
+                </div>
+                <p class="text-xs text-secondary">
+                  <strong>Mechanism:</strong> Every commit in Git generates an immutable SHA-1/SHA-256 hash calculated over the file contents, parent commit hashes, author metadata, and timestamp. Once committed, a file snapshot cannot be modified or deleted without invalidating the entire subsequent DAG (Directed Acyclic Graph).<br>
+                  <strong>Recovery Guarantee:</strong> Even if a developer accidentally deletes local branches or resets a working directory, Git's Reference Log (<code>git reflog</code>) retains commit object pointers in the internal database for 30–90 days, enabling instant 100% recovery.
+                </p>
+              </div>
+
+              <div class="practice-breakdown-card">
+                <div class="practice-title">
+                  <span class="badge badge-primary">Pillar B</span>
+                  <span>Protection Against Accidental Overwriting (Branch Sandboxing)</span>
+                </div>
+                <p class="text-xs text-secondary">
+                  <strong>Mechanism:</strong> In legacy non-VCS environments, two engineers editing files on a shared network drive silently overwrite each other's changes. In Git, every feature branch (e.g., <code>feature/q4-student-crud</code> vs <code>feature/q5-security-performance</code>) is an isolated sandbox pointing to independent commit trees.<br>
+                  <strong>Collaboration Safety:</strong> Multiple engineers can concurrently modify separate areas of the application without their edits colliding or overwriting uncommitted work.
+                </p>
+              </div>
+
+              <div class="practice-breakdown-card">
+                <div class="practice-title">
+                  <span class="badge badge-primary">Pillar C</span>
+                  <span>Complete Traceability & Auditability</span>
+                </div>
+                <p class="text-xs text-secondary">
+                  <strong>Mechanism:</strong> Every single line of code in the repository is permanently linked to an author, commit message, and timestamp via <code>git blame</code> and <code>git log</code>.<br>
+                  <strong>Engineering Benefit:</strong> Eliminates guesswork regarding why a architectural decision or bug fix was introduced.
+                </p>
+              </div>
+
+              <div class="practice-breakdown-card">
+                <div class="practice-title">
+                  <span class="badge badge-primary">Pillar D</span>
+                  <span>Pre-Merge Code Review & Quality Gating</span>
+                </div>
+                <p class="text-xs text-secondary">
+                  <strong>Mechanism:</strong> Pull Requests (PRs) on platforms like GitHub allow team leads to inspect exact visual diffs, execute automated CI test runners, and verify security benchmarks BEFORE code is permitted into the <code>main</code> branch.<br>
+                  <strong>Quality Barrier:</strong> Bad code is blocked at the review gate rather than in production.
+                </p>
+              </div>
+
+              <div class="practice-breakdown-card">
+                <div class="practice-title">
+                  <span class="badge badge-primary">Pillar E</span>
+                  <span>Non-Destructive Rollback & Revert</span>
+                </div>
+                <p class="text-xs text-secondary">
+                  <strong>Mechanism:</strong> If an unforeseen bug manifests in production, <code>git revert &lt;commit-hash&gt;</code> creates a new forward commit that cleanly undoes the targeted changes without erasing the historical timeline or altering parent commits.<br>
+                  <strong>Safety Metric:</strong> Reversals are predictable, atomic, and fully transparent in the changelog.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 7: Merge Conflict Resolution Protocol -->
+          <div class="card mb-4">
+            <div class="card-header">
+              <h3 class="card-title">⚡ Merge Conflict Resolution Protocol (What Happens When Lines Collide)</h3>
+              <span class="badge badge-warning">Conflict Resolution</span>
+            </div>
+            <p class="text-xs text-secondary mb-3">
+              A merge conflict occurs when two branches make differing edits to the <em>same line of the same file</em> since their common ancestor commit. Git halts the merge and requests human intervention.
+            </p>
+
+            <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1rem;">
+              <div>
+                <h4 class="text-xs font-bold text-muted uppercase tracking-wider mb-2">7-Step Conflict Resolution Standard Operating Procedure:</h4>
+                <ol class="text-xs text-secondary" style="padding-left: 1.25rem; line-height: 1.7;">
+                  <li><strong>Detection:</strong> Git informs the developer: <code class="font-mono text-warning">CONFLICT (content): Merge conflict in file.js</code>.</li>
+                  <li><strong>Status Inspection:</strong> Run <code class="font-mono">git status</code> to identify all conflicted unmerged paths.</li>
+                  <li><strong>Review Conflict Boundaries:</strong> Open the file and locate the Git marker block:
+                    <div class="code-box my-1" style="font-size: 0.75rem;">&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD (current main)
+const theme = 'dark';
+=======
+const theme = 'light';
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; feature/q2-form-validation</div>
+                  </li>
+                  <li><strong>Reconciliation:</strong> Decide the correct logical implementation (or combine both), then manually delete all marker lines (<code>&lt;&lt;&lt;&lt;&lt;&lt;&lt;</code>, <code>=======</code>, <code>&gt;&gt;&gt;&gt;&gt;&gt;&gt;</code>).</li>
+                  <li><strong>Regression Validation:</strong> Run automated tests (<code class="font-mono">npm test</code>) to confirm the reconciled code compiles and passes all assertions.</li>
+                  <li><strong>Stage Resolved Files:</strong> Run <code class="font-mono">git add &lt;resolved-files&gt;</code> to mark the conflict as resolved.</li>
+                  <li><strong>Finalize Merge:</strong> Run <code class="font-mono">git commit</code> or <code class="font-mono">git merge --continue</code> to conclude the integration cleanly.</li>
+                </ol>
+              </div>
+
+              <div>
+                <h4 class="text-xs font-bold text-muted uppercase tracking-wider mb-2">Visual Conflict Anatomy:</h4>
+                <div class="terminal-box" style="margin-top: 0;">
+                  <span class="terminal-comment">// 1. Incoming conflict in router.js</span><br>
+                  <span class="text-danger">&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD (Current branch code)</span><br>
+                  <span class="text-warning">this.routes['q5-security'] = () =&gt; securityLab.init();</span><br>
+                  <span class="text-muted">======= (Separator boundary)</span><br>
+                  <span class="text-info">this.routes['q6-git'] = () =&gt; gitVisualizer.init();</span><br>
+                  <span class="text-success">&gt;&gt;&gt;&gt;&gt;&gt;&gt; feature/q6-git-workflow (Incoming branch code)</span><br><br>
+                  <span class="terminal-comment">// 2. Human reconciled outcome (Both routes kept):</span><br>
+                  <span class="text-success">this.routes['q5-security'] = () =&gt; securityLab.init();</span><br>
+                  <span class="text-success">this.routes['q6-git'] = () =&gt; gitVisualizer.init();</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 8: Git vs GitHub Terminology Reference Matrix -->
+          <div class="card mb-4">
+            <div class="card-header">
+              <h3 class="card-title">📚 Core Version Control Terminology Reference (Git vs GitHub)</h3>
+              <span class="badge badge-primary">Knowledge Matrix</span>
+            </div>
+            <div class="table-responsive">
+              <table class="data-table" aria-label="Terminology Reference">
+                <thead>
+                  <tr>
+                    <th scope="col">Concept / Term</th>
+                    <th scope="col">Domain</th>
+                    <th scope="col">Definition & Role</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Local Repository</strong></td>
+                    <td><span class="badge badge-neutral">Git (Local)</span></td>
+                    <td>The complete standalone database (<code class="font-mono">.git/</code> directory) stored on the developer's computer containing all branches, history, and commits. Works fully offline.</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Remote Repository (origin)</strong></td>
+                    <td><span class="badge badge-info">GitHub (Cloud)</span></td>
+                    <td>The centralized cloud-hosted Git repository (e.g. on GitHub) serving as the authoritative single source of truth for team collaboration. <code class="font-mono">origin</code> is the default alias.</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Working Tree</strong></td>
+                    <td><span class="badge badge-neutral">Git (Local)</span></td>
+                    <td>The actual directory of files you currently see, edit, and run in your IDE.</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Staging Area (Index)</strong></td>
+                    <td><span class="badge badge-neutral">Git (Local)</span></td>
+                    <td>The intermediate preparation zone where changes are selected via <code class="font-mono">git add</code> before being finalized into a permanent commit.</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Commit (SHA)</strong></td>
+                    <td><span class="badge badge-neutral">Git (Local)</span></td>
+                    <td>An immutable, cryptographically hashed snapshot of the staged files at a specific moment in time.</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Merge (--no-ff)</strong></td>
+                    <td><span class="badge badge-neutral">Git (Local)</span></td>
+                    <td>Combining the history of two diverging branches into one, generating a dedicated merge commit that preserves branch lineage.</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Push vs Pull</strong></td>
+                    <td><span class="badge badge-primary">Sync</span></td>
+                    <td><code class="font-mono">git push</code> uploads local commits to the remote GitHub repository; <code class="font-mono">git pull</code> fetches remote commits and merges them into the current local branch.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Section 9: Common Git Commands Interactive Showcase -->
           <div class="card">
             <div class="card-header">
-              <h3 class="card-title">📖 Version Control & Accidental Loss Prevention</h3>
+              <h3 class="card-title">⌨️ Essential Git Command Cheatsheet</h3>
+              <span class="badge badge-neutral">Click Copy to Use</span>
             </div>
-            <div class="flex-col gap-3">
-              <div>
-                <h4>How Version Control Prevents Accidental Loss & Overwriting</h4>
-                <p class="text-sm text-secondary">
-                  <strong>1. Immutable Commit History:</strong> Every commit in Git is cryptographically hashed using SHA-1/SHA-256. Once committed, a file's state cannot be lost or secretly modified without altering history. Even if uncommitted working tree edits are discarded, committed states remain recoverable via <code>git reflog</code>.
-                </p>
+            <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1rem;">
+              
+              <div class="benchmark-box">
+                <div class="flex justify-between items-center mb-1">
+                  <span class="text-xs font-bold font-mono text-primary">git clone &lt;repo-url&gt;</span>
+                  <button type="button" class="btn btn-outline btn-sm copy-cmd-btn" data-clipboard="git clone https://github.com/gul310/ma-soft-web-development-assessment.git">Copy</button>
+                </div>
+                <p class="text-xs text-muted" style="margin: 0;">Clones an existing remote repository onto the local development machine.</p>
               </div>
 
-              <div>
-                <h4>2. Feature Branch Isolation:</h4>
-                <p class="text-sm text-secondary">
-                  By developing discrete features on dedicated branches (e.g. <code>feature/q2-form-validation</code>), developers can experiment, refactor, and test without affecting the stable <code>main</code> branch. Multiple engineers can work simultaneously on the same codebase without overwriting each other's work.
-                </p>
+              <div class="benchmark-box">
+                <div class="flex justify-between items-center mb-1">
+                  <span class="text-xs font-bold font-mono text-primary">git status</span>
+                  <button type="button" class="btn btn-outline btn-sm copy-cmd-btn" data-clipboard="git status">Copy</button>
+                </div>
+                <p class="text-xs text-muted" style="margin: 0;">Displays active branch, staged files, untracked files, and working tree cleanliness.</p>
               </div>
 
-              <div>
-                <h4>3. Non-Destructive Conflict Resolution:</h4>
-                <p class="text-sm text-secondary">
-                  When two developers modify the same lines of code, Git prevents silent overwrites by flagging a <strong>Merge Conflict</strong>. The merge stops, marking conflict boundaries with <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</code> and <code>&gt;&gt;&gt;&gt;&gt;&gt;&gt; feature</code>, forcing developers to consciously reconcile differences before completing the merge.
-                </p>
+              <div class="benchmark-box">
+                <div class="flex justify-between items-center mb-1">
+                  <span class="text-xs font-bold font-mono text-primary">git checkout -b feature/name</span>
+                  <button type="button" class="btn btn-outline btn-sm copy-cmd-btn" data-clipboard="git checkout -b feature/new-module">Copy</button>
+                </div>
+                <p class="text-xs text-muted" style="margin: 0;">Creates a new isolated branch and switches to it in one atomic step.</p>
               </div>
+
+              <div class="benchmark-box">
+                <div class="flex justify-between items-center mb-1">
+                  <span class="text-xs font-bold font-mono text-primary">git log --oneline --graph</span>
+                  <button type="button" class="btn btn-outline btn-sm copy-cmd-btn" data-clipboard="git log --oneline --graph --all -n 15">Copy</button>
+                </div>
+                <p class="text-xs text-muted" style="margin: 0;">Renders an ASCII visualization of branch histories, merges, and commit hashes.</p>
+              </div>
+
             </div>
           </div>
 

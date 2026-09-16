@@ -12,6 +12,7 @@ class ToastManager {
   }
 
   init() {
+    if (typeof document === 'undefined') return;
     let container = qs('#toast-container');
     if (!container) {
       container = createElement('div', {

@@ -3,8 +3,8 @@
  * Guarantees XSS-safe DOM construction using standard browser APIs without innerHTML risks.
  */
 
-export const qs = (selector, scope = document) => scope.querySelector(selector);
-export const qsa = (selector, scope = document) => Array.from(scope.querySelectorAll(selector));
+export const qs = (selector, scope = typeof document !== 'undefined' ? document : null) => scope ? scope.querySelector(selector) : null;
+export const qsa = (selector, scope = typeof document !== 'undefined' ? document : null) => scope ? Array.from(scope.querySelectorAll(selector)) : [];
 
 /**
  * Creates an element with attributes, dataset, classes, and children safely
